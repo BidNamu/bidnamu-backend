@@ -10,6 +10,6 @@ spring:
     slave:
       hikari:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://localhost:3307/bidnamu
+        jdbc-url: jdbc:mysql://localhost:3308/bidnamu
         username: root
         password: root

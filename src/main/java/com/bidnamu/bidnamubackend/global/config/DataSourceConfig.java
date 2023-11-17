@@ -18,10 +18,9 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 @Configuration
 public class DataSourceConfig {
 
-    private static final String MASTER_DATASOURCE = "spring.datasource.hikari";
-    private static final String SLAVE_DATASOURCE = "spring.datasource.hikari";
+    private static final String MASTER_DATASOURCE = "masterDataSource";
+    private static final String SLAVE_DATASOURCE = "slaveDataSource";
 
-    @Primary
     @Bean(name = MASTER_DATASOURCE)
     @ConfigurationProperties(prefix = "spring.datasource.master.hikari")
     public DataSource masterDataSource() {
