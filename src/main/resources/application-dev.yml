@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    master:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3307/bidnamu
+        username: root
+        password: root
+
+    slave:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3308/bidnamu
+        username: root
+        password: root
