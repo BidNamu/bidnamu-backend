@@ -13,3 +13,7 @@ spring:
         jdbc-url: jdbc:mysql://localhost:3308/bidnamu
         username: root
         password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: create
