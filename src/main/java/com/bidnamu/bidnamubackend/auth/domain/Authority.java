@@ -1,6 +1,7 @@
-package com.bidnamu.bidnamubackend.user.domain;
+package com.bidnamu.bidnamubackend.auth.domain;
 
 import com.bidnamu.bidnamubackend.global.domain.BaseEntity;
+import com.bidnamu.bidnamubackend.user.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;

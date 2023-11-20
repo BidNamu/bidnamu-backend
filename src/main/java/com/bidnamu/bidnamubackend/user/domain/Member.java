@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.user.domain;
 
+import com.bidnamu.bidnamubackend.auth.domain.Authority;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
