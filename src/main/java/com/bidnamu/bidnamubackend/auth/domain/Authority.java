@@ -1,7 +1,7 @@
 package com.bidnamu.bidnamubackend.auth.domain;
 
 import com.bidnamu.bidnamubackend.global.domain.BaseEntity;
-import com.bidnamu.bidnamubackend.user.domain.Member;
+import com.bidnamu.bidnamubackend.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ public class Authority extends BaseEntity {
     private Role role;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Member member;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private User user;
 }

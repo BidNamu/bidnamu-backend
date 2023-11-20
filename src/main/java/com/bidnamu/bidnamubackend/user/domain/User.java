@@ -2,10 +2,8 @@ package com.bidnamu.bidnamubackend.user.domain;
 
 import com.bidnamu.bidnamubackend.auth.domain.Authority;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -18,7 +16,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -36,11 +34,11 @@ public class Member extends BaseTimeEntity {
     private boolean expired = false;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private final Set<Authority> authorities = new HashSet<>();
 
     @Builder
-    public Member(String email, String password, String nickname) {
+    public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
