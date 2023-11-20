@@ -26,4 +26,4 @@ services:
     image: redis:7.2-alpine
     command: redis-server --port 6380
     ports:
-      - "6380:6379"
+      - "6380:6380"
