@@ -25,25 +25,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", false))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-                )
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sessionManagement -> {
-                    sessionManagement.sessionFixation().migrateSession();
-                    sessionManagement.maximumSessions(1)
-                            .maxSessionsPreventsLogin(false)
-                            .expiredUrl("/session-expired");
-                })
-                .authorizeHttpRequests(registry -> registry.requestMatchers("/myPage").hasAnyRole("USER")
-                        .requestMatchers("/", "/**").permitAll())
+                .authorizeHttpRequests(registry -> registry.requestMatchers("/", "/**").permitAll())
                 .getOrBuild();
-
     }
 }
