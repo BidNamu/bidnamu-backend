@@ -1,6 +1,7 @@
 package com.bidnamu.bidnamubackend.user.domain;
 
 import com.bidnamu.bidnamubackend.auth.domain.Authority;
+import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 
@@ -34,7 +35,7 @@ public class User extends BaseTimeEntity {
     private boolean expired = false;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private final Set<Authority> authorities = new HashSet<>();
 
     @Builder
@@ -58,5 +59,12 @@ public class User extends BaseTimeEntity {
 
     public void updateExpired(boolean expired) {
         this.expired = expired;
+    }
+
+    public void addAuthority(Role role) {
+        Authority authority = new Authority();
+        authority.setRole(role);
+        authority.setUser(this);
+        this.authorities.add(authority);
     }
 }
