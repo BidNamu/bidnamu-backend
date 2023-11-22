@@ -1,20 +1,40 @@
 version: '3.8'
 services:
   mysql-master:
-    image: mysql:8.0
+    build:
+      context: ./
+      dockerfile: docker/master/Dockerfile
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: bidnamu
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
+    volumes:
+      - master:/var/lib/mysql
+      - master:/var/lib/mysql-files
+    networks:
+      - net-mysql
 
   mysql-slave:
-    image: mysql:8.0
+    build:
+      context: ./
+      dockerfile: docker/slave/Dockerfile
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: bidnamu
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3308:3306"
+    volumes:
+      - slave:/var/lib/mysql
+      - slave:/var/lib/mysql-files
+    networks:
+      - net-mysql
 
   redis-cache:
     image: redis:7.2-alpine
@@ -27,3 +47,11 @@ services:
     command: redis-server --port 6380
     ports:
       - "6380:6380"
+
+volumes:
+  master:
+  slave:
+
+networks:
+  net-mysql:
+    driver: bridge
