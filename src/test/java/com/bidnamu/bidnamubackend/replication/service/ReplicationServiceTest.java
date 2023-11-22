@@ -7,6 +7,7 @@ import jakarta.annotation.Resource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +20,9 @@ class ReplicationServiceTest {
     @Resource
     private TestEntityRepository testEntityRepository;
 
-    @DisplayName("@Transaction(readOnly = false)일 때 한 건 저장")
     @Test
+    @DisplayName("@Transaction(readOnly = false)일 때 한 건 저장")
+    @Transactional
     void testInsertEntityReadOnlyFalse() {
         assertDoesNotThrow(() -> testService.insertEntityReadOnlyFalse());
     }
@@ -31,8 +33,9 @@ class ReplicationServiceTest {
         assertThrows(Exception.class, () -> testService.insertEntityReadOnlyTrue());
     }
 
-    @DisplayName("Master 데이터베이스에 저장한 엔티티와 Slave 에서 해당 아이디로 조회한 엔티티는 같아야 한다")
     @Test
+    @DisplayName("Master 데이터베이스에 저장한 엔티티와 Slave 에서 해당 아이디로 조회한 엔티티는 같아야 한다")
+    @Transactional
     void testMasterSlaveReplication() {
         String testData = "Test Data";
 
