@@ -45,26 +45,13 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updateEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void updateExpired(boolean expired) {
-        this.expired = expired;
-    }
-
     public void addAuthority(Role role) {
-        Authority authority = new Authority();
-        authority.setRole(role);
-        authority.setUser(this);
-        this.authorities.add(authority);
+        if (!this.authorities.isEmpty() && (authorities.stream().anyMatch(authority -> authority.getRole().equals(role)))) {
+                throw new IllegalArgumentException("해당 유저는 이미 해당 권한을 가지고 있습니다.");
+        }
+            Authority authority = new Authority();
+            authority.setRole(role);
+            authority.setUser(this);
+            this.authorities.add(authority);
     }
 }
