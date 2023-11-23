@@ -2,27 +2,35 @@ package com.bidnamu.bidnamubackend.user.service;
 
 import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.user.domain.User;
+import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void registration(User member) {
-        if (checkEmailDuplication(member.getEmail())) {
+    @Transactional
+    public RegistrationResponseDto createUser(RegistrationRequestDto form) {
+        if (isExistEmail(form.email())) {
             throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
         }
-        member.addAuthority(Role.USER);
-        userRepository.save(member);
+
+        User user = userRepository.save(form.toEntity(passwordEncoder));
+        user.addAuthority(Role.USER);
+        return RegistrationResponseDto.from(user);
     }
 
-    private boolean checkEmailDuplication(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    private boolean isExistEmail(String email) {
+        return userRepository.existsUserByEmail(email);
     }
 
 }

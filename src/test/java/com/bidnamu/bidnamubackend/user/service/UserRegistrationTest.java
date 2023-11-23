@@ -1,6 +1,7 @@
 package com.bidnamu.bidnamubackend.user.service;
 
 import com.bidnamu.bidnamubackend.user.domain.User;
+import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import jakarta.annotation.Resource;
@@ -15,27 +16,26 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserRegistrationTest {
 
     @Resource
-    UserService userService;
+    private UserService userService;
 
     @Resource
-    UserRepository userRepository;
-
+    private UserRepository userRepository;
 
     @Test
     @Transactional
     @DisplayName("사용자가 회원가입을 요청하였을 경우 요청한 정보대로 DB에 저장된다")
     void successToRegistration() {
         // Given
-        User user = User.builder().email("rudals1888@gmail.com").nickname("kimkim")
-            .password("fefefass1Z!z").build();
+        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+            "rudals1888@gmail.com", "kimkim", "fefefass1Z!z");
 
         // When
-        userService.registration(user);
+        userService.createUser(requestDto);
 
         // Then
-        User foundUser = userRepository.findByEmail(user.getEmail())
+        User foundUser = userRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        assertEquals(foundUser.getEmail(), user.getEmail());
+        assertEquals(foundUser.getEmail(), requestDto.email());
     }
 
     @Test
@@ -44,7 +44,8 @@ class UserRegistrationTest {
     void failToRegistrationDuplicatedEmail() {
         // Given
         String email = "rudals1888@gmail.com";
-        // 이미 존재하는 사용자
+
+        // When
         userRepository.save(
             User.builder()
                 .email(email)
@@ -52,13 +53,9 @@ class UserRegistrationTest {
                 .password("fefefass1Z!z")
                 .build());
 
-        User newUser = User.builder()
-            .email(email)
-            .nickname("kimkim1")
-            .password("fefefass1Z!z!")
-            .build();
-
         // Then
-        assertThrows(DuplicatedEmailException.class, () -> userService.registration(newUser));
+        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+            "kimkim2", email, "fefefass1Z!z");
+        assertThrows(DuplicatedEmailException.class, () -> userService.createUser(requestDto));
     }
 }
