@@ -20,7 +20,7 @@ public class UserService {
 
     @Transactional
     public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
-        if (isExistEmail(form.email())) {
+        if (isDuplicatedEmail(form.email())) {
             throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
         }
 
@@ -29,7 +29,7 @@ public class UserService {
         return RegistrationResponseDto.from(user);
     }
 
-    private boolean isExistEmail(final String email) {
+    public boolean isDuplicatedEmail(final String email) {
         return userRepository.existsUserByEmail(email);
     }
 
