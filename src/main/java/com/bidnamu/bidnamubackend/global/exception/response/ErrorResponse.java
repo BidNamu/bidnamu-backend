@@ -1,5 +1,6 @@
-package com.bidnamu.bidnamubackend.global.exception;
+package com.bidnamu.bidnamubackend.global.exception.response;
 
+import com.bidnamu.bidnamubackend.global.exception.error_code.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import org.springframework.validation.FieldError;
@@ -7,7 +8,7 @@ import org.springframework.validation.FieldError;
 import java.util.List;
 
 @Builder
-public record ErrorResponse(String code, String message,
+public record ErrorResponse(ErrorCode code, String message,
                             @JsonInclude(JsonInclude.Include.NON_EMPTY) List<ValidationError> errors) {
 
     @Builder
