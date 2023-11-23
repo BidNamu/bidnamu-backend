@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<RegistrationResponseDto> registration(@RequestBody @Valid RegistrationRequestDto registrationForm) {
-        User member = RegistrationRequestDto.toEntity(registrationForm, passwordEncoder);
+        User member = registrationForm.toEntity(passwordEncoder);
         memberService.registration(member);
         return ResponseEntity.status(HttpStatus.CREATED).body(new RegistrationResponseDto(member));
     }
