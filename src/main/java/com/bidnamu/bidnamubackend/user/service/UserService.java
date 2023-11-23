@@ -19,17 +19,17 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public RegistrationResponseDto createUser(RegistrationRequestDto form) {
+    public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
         if (isExistEmail(form.email())) {
             throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
         }
 
-        User user = userRepository.save(form.toEntity(passwordEncoder));
+        final User user = userRepository.save(form.toEntity(passwordEncoder));
         user.addAuthority(Role.USER);
         return RegistrationResponseDto.from(user);
     }
 
-    private boolean isExistEmail(String email) {
+    private boolean isExistEmail(final String email) {
         return userRepository.existsUserByEmail(email);
     }
 

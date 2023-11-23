@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<RegistrationResponseDto> createUser(
-        @RequestBody @Valid RegistrationRequestDto registrationForm) {
+        @RequestBody @Valid final RegistrationRequestDto registrationForm) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             userService.createUser(registrationForm));
     }
