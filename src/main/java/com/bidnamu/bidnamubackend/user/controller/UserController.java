@@ -30,9 +30,15 @@ public class UserController {
             userService.createUser(registrationForm));
     }
 
-    @GetMapping("/duplicated/{email}")
+    @GetMapping("/email/duplicated/{email}")
     public ResponseEntity<HttpStatus> isDuplicatedEmail(@PathVariable final String email) {
         boolean duplicated = userService.isDuplicatedEmail(email);
+        return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
+    }
+
+    @GetMapping("/nickname/duplicated/{nickname}")
+    public ResponseEntity<HttpStatus> isDuplicatedNickname(@PathVariable final String nickname) {
+        boolean duplicated = userService.isDuplicatedEmail(nickname);
         return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
     }
 }

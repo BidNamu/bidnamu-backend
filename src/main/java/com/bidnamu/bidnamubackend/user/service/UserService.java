@@ -5,6 +5,7 @@ import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
+import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,10 @@ public class UserService {
             throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
         }
 
+        if (isDuplicatedNickname(form.nickname())) {
+            throw new DuplicatedNicknameException("이미 존재하는 닉네임입니다.");
+        }
+
         final User user = userRepository.save(form.toEntity(passwordEncoder));
         user.addAuthority(Role.USER);
         return RegistrationResponseDto.from(user);
@@ -33,4 +38,7 @@ public class UserService {
         return userRepository.existsUserByEmail(email);
     }
 
+    public boolean isDuplicatedNickname(final String nickname) {
+        return userRepository.existsUserByNickname(nickname);
+    }
 }

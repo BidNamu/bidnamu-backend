@@ -3,6 +3,7 @@ package com.bidnamu.bidnamubackend.user.service;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
+import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.DisplayName;
@@ -57,5 +58,26 @@ class UserRegistrationTest {
         RegistrationRequestDto requestDto = new RegistrationRequestDto(
             "kimkim2", email, "fefefass1Z!z");
         assertThrows(DuplicatedEmailException.class, () -> userService.createUser(requestDto));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("사용자가 이미 존재하는 Nickname으로 회원가입을 요청하였을 경우 DuplicatedNicknameException을 발생시킨다")
+    void failToRegistrationDuplicatedNickname() {
+        // Given
+        String nickname = "kimkim";
+
+        // When
+        userRepository.save(
+            User.builder()
+                .email("rudals1888@gmail.com")
+                .nickname(nickname)
+                .password("fefefass1Z!z")
+                .build());
+
+        // Then
+        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+            nickname, "rudals1999@gmail.com", "fefefass1Z!z");
+        assertThrows(DuplicatedNicknameException.class, () -> userService.createUser(requestDto));
     }
 }
