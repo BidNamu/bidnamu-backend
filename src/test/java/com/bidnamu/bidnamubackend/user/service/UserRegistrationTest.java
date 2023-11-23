@@ -20,7 +20,7 @@ class UserRegistrationTest {
 
     @Test
     @Transactional
-    void registration() {
+    void successToRegistration() {
         // Given
         User user = User.builder().email("rudals1888@gmail.com").nickname("kimkim").password("fefefass1Z!z").build();
 
