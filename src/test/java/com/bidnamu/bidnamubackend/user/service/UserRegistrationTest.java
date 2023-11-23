@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class UserServiceTest {
+class UserRegistrationTest {
 
     @Resource
     UserService userService;
