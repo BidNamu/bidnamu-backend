@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping("/nickname/duplicated/{nickname}")
     public ResponseEntity<HttpStatus> isDuplicatedNickname(@PathVariable final String nickname) {
-        boolean duplicated = userService.isDuplicatedEmail(nickname);
+        boolean duplicated = userService.isDuplicatedNickname(nickname);
         return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
     }
 }
