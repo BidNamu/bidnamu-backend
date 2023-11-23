@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.user.domain;
+package com.bidnamu.bidnamubackend.auth.domain;
 
 public enum Role {
     USER,

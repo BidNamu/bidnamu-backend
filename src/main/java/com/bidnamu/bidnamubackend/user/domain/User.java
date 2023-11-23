@@ -1,10 +1,10 @@
 package com.bidnamu.bidnamubackend.user.domain;
 
+import com.bidnamu.bidnamubackend.auth.domain.Authority;
+import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -35,29 +35,23 @@ public class Member extends BaseTimeEntity {
     private boolean expired = false;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private final Set<Authority> authorities = new HashSet<>();
 
     @Builder
-    public Member(String email, String password, String nickname) {
+    public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updateEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void updateExpired(boolean expired) {
-        this.expired = expired;
+    public void addAuthority(Role role) {
+        if (!this.authorities.isEmpty() && (authorities.stream().anyMatch(authority -> authority.getRole().equals(role)))) {
+                throw new IllegalArgumentException("해당 유저는 이미 해당 권한을 가지고 있습니다.");
+        }
+            Authority authority = new Authority();
+            authority.setRole(role);
+            authority.setUser(this);
+            this.authorities.add(authority);
     }
 }
