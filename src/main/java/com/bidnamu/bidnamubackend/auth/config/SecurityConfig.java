@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.auth.common;
+package com.bidnamu.bidnamubackend.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
