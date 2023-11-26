@@ -25,3 +25,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+  jwt:
+    issuer: kimmin1
+    secret_key: bid-namu
