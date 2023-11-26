@@ -28,4 +28,4 @@ spring:
 
   jwt:
     issuer: kimmin1
-    secret_key: bid-namu
+    secret-key: YWprbGdoc2Rma2xnanNkaGZnbGprc2RmZ2hsc2
