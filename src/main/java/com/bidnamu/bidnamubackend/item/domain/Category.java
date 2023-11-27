@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,8 +28,44 @@ public class Category extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category parent;
 
-    private Long depth;
+    @Column(nullable = false)
+    private int depth = 0;
 
     @OneToMany(mappedBy = "parent")
-    private List<Category> children = new ArrayList<>();
+    private final List<Category> children = new ArrayList<>();
+
+    @Builder
+    public Category(final String name, final Category parent) {
+        this.name = name;
+        setParent(parent);
+        this.depth = countDepth();
+    }
+
+    public void setParent(final Category parent) {
+        if (isCircularReference(parent)) {
+            throw new IllegalArgumentException("카테고리 생성 시 순환참조가 감지되었습니다.");
+        }
+        this.parent = parent;
+    }
+
+    private boolean isCircularReference(final Category potentialParent) {
+        Category current = potentialParent;
+        while (current != null) {
+            if (current == this) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
+    }
+
+    private int countDepth() {
+        int count = 0;
+        Category p = this.parent;
+        while (p != null) {
+            count++;
+            p = p.getParent();
+        }
+        return count;
+    }
 }

@@ -1,14 +1,15 @@
 package com.bidnamu.bidnamubackend.item.dto.response;
 
 import com.bidnamu.bidnamubackend.item.domain.Category;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
-import lombok.Getter;
 
-@Getter
 public record CategoryResultDto(
     Long id,
     String name,
-    Long depth,
+    int depth,
+    @JsonInclude(Include.NON_EMPTY)
     List<CategoryResultDto> children
 ) {
 
