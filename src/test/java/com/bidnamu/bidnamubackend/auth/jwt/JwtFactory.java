@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.config.jwt;
+package com.bidnamu.bidnamubackend.auth.jwt;
 
 import com.bidnamu.bidnamubackend.auth.config.JwtProperties;
 import io.jsonwebtoken.Header;
@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-class JwtFactory {
+public class JwtFactory {
 
   private String subject = "test11@email.com";
   private Date issuedAt = new Date();

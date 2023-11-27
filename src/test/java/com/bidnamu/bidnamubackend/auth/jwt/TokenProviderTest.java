@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.config.jwt;
+package com.bidnamu.bidnamubackend.auth.jwt;
 
 import com.bidnamu.bidnamubackend.auth.config.JwtProperties;
 import com.bidnamu.bidnamubackend.auth.config.TokenProvider;
