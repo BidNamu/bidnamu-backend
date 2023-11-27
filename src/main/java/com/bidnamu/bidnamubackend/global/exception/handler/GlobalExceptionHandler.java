@@ -4,6 +4,7 @@ import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
+import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
         final FieldError error = e.getBindingResult().getFieldErrors().get(0);
         final var errorResponse = createErrorResponse(INVALID_PARAMETER, error.getDefaultMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(
+        final NoSuchElementException e) {
+        final var errorResponse = createErrorResponse(RESOURCE_NOT_FOUND, e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     private ErrorResponse createErrorResponse(final CommonErrorCode errorCode,
