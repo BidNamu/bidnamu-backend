@@ -21,4 +21,7 @@ public class HttpStatusResponseEntity {
         ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     public static final ResponseEntity<HttpStatus> RESPONSE_PAYLOAD_TOO_LARGE =
         ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).build();
+
+    public static final ResponseEntity<HttpStatus> RESPONSE_NO_CONTENT =
+        ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 }

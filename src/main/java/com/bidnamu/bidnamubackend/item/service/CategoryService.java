@@ -55,6 +55,11 @@ public class CategoryService {
         return CategoryResultDto.from(category);
     }
 
+    @Transactional
+    public void deleteCategory(final Long id) {
+        categoryRepository.delete(findCategoryById(id));
+    }
+
     private Category toEntity(final CategoryFormDto categoryFormDto) {
         final var parent =
             categoryFormDto.parent() != null && categoryFormDto.parent() != 0
