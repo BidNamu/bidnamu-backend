@@ -44,11 +44,12 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResultDto> updateCategory(
+        @PathVariable final Long id,
         @RequestBody @Valid final CategoryFormDto form) {
-        final CategoryResultDto category = categoryService.updateCategory(form);
+        final CategoryResultDto category = categoryService.updateCategory(id, form);
         return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 }

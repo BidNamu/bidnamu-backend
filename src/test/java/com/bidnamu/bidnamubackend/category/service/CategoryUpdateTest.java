@@ -35,8 +35,8 @@ class CategoryUpdateTest {
 
         // When
         final String updatedName = "변경된 카테고리명";
-        final var updatedCategoryDto = categoryService.updateCategory(
-            CategoryFormDto.builder().id(category.getId()).name(updatedName).parent(parent2.getId())
+        final var updatedCategoryDto = categoryService.updateCategory(category.getId(),
+            CategoryFormDto.builder().name(updatedName).parent(parent2.getId())
                 .build());
 
         final var updatedEntity = categoryRepository.findById(updatedCategoryDto.id())
@@ -57,8 +57,10 @@ class CategoryUpdateTest {
 
         // When
         final var form = CategoryFormDto.builder().parent(children.getId()).build();
+        final Long id = parent.getId();
 
         // Then
-        assertThrows(IllegalArgumentException.class, () -> categoryService.updateCategory(form));
+        assertThrows(IllegalArgumentException.class,
+            () -> categoryService.updateCategory(id, form));
     }
 }

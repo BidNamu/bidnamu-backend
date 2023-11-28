@@ -41,11 +41,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResultDto updateCategory(final CategoryFormDto categoryFormDto) {
-        if (categoryFormDto.id() == null) {
-            throw new IllegalArgumentException("Category 의 ID가 null 입니다.");
-        }
-        final Category category = findCategoryById(categoryFormDto.id());
+    public CategoryResultDto updateCategory(final Long id, final CategoryFormDto categoryFormDto) {
+        final Category category = findCategoryById(id);
 
         if (categoryFormDto.parent() != null) {
             final Category parent = findCategoryById(categoryFormDto.parent());
