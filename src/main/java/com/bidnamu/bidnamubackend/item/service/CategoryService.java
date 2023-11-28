@@ -34,7 +34,28 @@ public class CategoryService {
 
     @Transactional
     public CategoryResultDto createCategory(final CategoryFormDto categoryFormDto) {
+        if (categoryFormDto.name().isBlank()) {
+            throw new IllegalArgumentException("Category 의 name 이 비어있습니다.");
+        }
         return CategoryResultDto.from(categoryRepository.save(toEntity(categoryFormDto)));
+    }
+
+    @Transactional
+    public CategoryResultDto updateCategory(final CategoryFormDto categoryFormDto) {
+        if (categoryFormDto.id() == null) {
+            throw new IllegalArgumentException("Category 의 ID가 null 입니다.");
+        }
+        final Category category = findCategoryById(categoryFormDto.id());
+
+        if (categoryFormDto.parent() != null) {
+            final Category parent = findCategoryById(categoryFormDto.parent());
+            category.updateParent(parent);
+        }
+        if (!categoryFormDto.name().isBlank()) {
+            category.updateName(categoryFormDto.name());
+        }
+
+        return CategoryResultDto.from(category);
     }
 
     private Category toEntity(final CategoryFormDto categoryFormDto) {

@@ -28,7 +28,7 @@ class CategoryCreationTest {
     void topCategorySaveTest() {
         // Given
         final String categoryName = "카테고리";
-        final CategoryFormDto form = new CategoryFormDto(categoryName, null);
+        final CategoryFormDto form = CategoryFormDto.builder().name(categoryName).build();
 
         // When
         final CategoryResultDto result = categoryService.createCategory(form);
@@ -45,7 +45,7 @@ class CategoryCreationTest {
         final var dep1 =
             categoryRepository.save(Category.builder().name("dep1").build());
 
-        final var form = new CategoryFormDto("dep2", dep1.getId());
+        final var form = CategoryFormDto.builder().name("dep2").parent(dep1.getId()).build();
 
         // When
         final var dep2Dto = categoryService.createCategory(form);

@@ -48,6 +48,10 @@ public class Category extends BaseEntity {
         this.parent = parent;
     }
 
+    public void updateName(final String name) {
+        this.name = name;
+    }
+
     private boolean isCircularReference(final Category potentialParent) {
         Category current = potentialParent;
         while (current != null) {
