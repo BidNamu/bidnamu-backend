@@ -46,6 +46,7 @@ public class Category extends BaseEntity {
             throw new IllegalArgumentException("카테고리 생성 시 순환참조가 감지되었습니다.");
         }
         this.parent = parent;
+        this.depth = countDepth();
     }
 
     public void updateName(final String name) {
