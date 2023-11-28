@@ -37,11 +37,11 @@ public class Category extends BaseEntity {
     @Builder
     public Category(final String name, final Category parent) {
         this.name = name;
-        setParent(parent);
+        updateParent(parent);
         this.depth = countDepth();
     }
 
-    public void setParent(final Category parent) {
+    public void updateParent(final Category parent) {
         if (isCircularReference(parent)) {
             throw new IllegalArgumentException("카테고리 생성 시 순환참조가 감지되었습니다.");
         }
