@@ -12,7 +12,7 @@ public class RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
 
-  public RefreshToken findByRefreshToken(String refreshToken) {
+  public RefreshToken findByRefreshToken(final String refreshToken) {
     return refreshTokenRepository.findByRefreshTokenValue(refreshToken)
         .orElseThrow(() -> new UnknownRefreshTokenException("유효하지 않은 토큰입니다."));
   }

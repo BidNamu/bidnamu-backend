@@ -16,7 +16,7 @@ public class TokenService {
   private final RefreshTokenService refreshTokenService;
   private final UserService userService;
 
-  public String createNewAccessToken(String refreshToken) {
+  public String createNewAccessToken(final String refreshToken) {
     if (!tokenProvider.validToken(refreshToken)) {
       throw new UnknownRefreshTokenException("유효하지 않은 토큰입니다.");
     }

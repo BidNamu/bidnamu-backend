@@ -12,13 +12,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
+
   private final TokenProvider tokenProvider;
   private static final String HEADER_AUTHORIZATION = "Authorization";
   private static final String TOKEN_PREFIX = "Bearer ";
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(final HttpServletRequest request,
+      final HttpServletResponse response,
+      final FilterChain filterChain) throws ServletException, IOException {
 
     String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
     String token = getAccessToken(authorizationHeader);

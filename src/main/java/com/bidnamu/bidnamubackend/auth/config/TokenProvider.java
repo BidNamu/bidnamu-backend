@@ -21,12 +21,12 @@ public class TokenProvider {
 
   private final JwtProperties jwtProperties;
 
-  public String generateToken(User user, Duration expiredAt) {
+  public String generateToken(final User user,final Duration expiredAt) {
     Date now = new Date();
     return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
   }
 
-  private String makeToken(Date expiry, User user) {
+  private String makeToken(final Date expiry,final User user) {
 
     return Jwts.builder()
         .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -38,7 +38,7 @@ public class TokenProvider {
         .compact();
   }
 
-  public boolean validToken(String token) {
+  public boolean validToken(final String token) {
     try {
       Jwts.parser()
           .setSigningKey(jwtProperties.getSecretKey())
@@ -49,7 +49,7 @@ public class TokenProvider {
     }
   }
 
-  public Authentication getAuthentication(String token) {
+  public Authentication getAuthentication(final String token) {
     Claims claims = getClaims(token);
     Set<SimpleGrantedAuthority> authorities = Collections.singleton(
         new SimpleGrantedAuthority("ROLE_USER"));
@@ -59,12 +59,12 @@ public class TokenProvider {
             authorities), token, authorities);
   }
 
-  public Long getUserId(String token) {
+  public Long getUserId(final String token) {
     Claims claims = getClaims(token);
     return claims.get("id", Long.class);
   }
 
-  private Claims getClaims(String token) {
+  private Claims getClaims(final String token) {
     return Jwts.parser()
         .setSigningKey(jwtProperties.getSecretKey())
         .parseClaimsJws(token)
