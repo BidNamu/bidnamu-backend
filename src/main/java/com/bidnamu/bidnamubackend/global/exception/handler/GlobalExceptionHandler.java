@@ -5,6 +5,7 @@ import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import java.util.NoSuchElementException;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -44,6 +45,13 @@ public class GlobalExceptionHandler {
         final NoSuchElementException e) {
         final var errorResponse = createErrorResponse(RESOURCE_NOT_FOUND, e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorResponse> handleFileUploadException(
+        final FileUploadException e) {
+        final var errorResponse = createErrorResponse(BAD_REQUEST, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     private ErrorResponse createErrorResponse(final CommonErrorCode errorCode,
