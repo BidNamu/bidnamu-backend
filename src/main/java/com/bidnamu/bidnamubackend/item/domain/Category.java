@@ -70,6 +70,9 @@ public class Category extends BaseEntity {
         Category p = this.parent;
         while (p != null) {
             count++;
+            if (count > 2) {
+                throw new IllegalArgumentException("depth 는 2를 넘을 수 없습니다.");
+            }
             p = p.getParent();
         }
         return count;
