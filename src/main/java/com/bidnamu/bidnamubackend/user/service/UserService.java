@@ -17,34 +17,39 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
-        if (isDuplicatedEmail(form.email())) {
-            throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
-        }
-
-        if (isDuplicatedNickname(form.nickname())) {
-            throw new DuplicatedNicknameException("이미 존재하는 닉네임입니다.");
-        }
-
-        final User user = userRepository.save(form.toEntity(passwordEncoder));
-        user.addAuthority(Role.USER);
-        return RegistrationResponseDto.from(user);
+  @Transactional
+  public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
+    if (isDuplicatedEmail(form.email())) {
+      throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
     }
 
-    public User findById(Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다."));
+    if (isDuplicatedNickname(form.nickname())) {
+      throw new DuplicatedNicknameException("이미 존재하는 닉네임입니다.");
     }
 
-    public boolean isDuplicatedEmail(final String email) {
-        return userRepository.existsUserByEmail(email);
-    }
+    final User user = userRepository.save(form.toEntity(passwordEncoder));
+    user.addAuthority(Role.USER);
+    return RegistrationResponseDto.from(user);
+  }
 
-    public boolean isDuplicatedNickname(final String nickname) {
-        return userRepository.existsUserByNickname(nickname);
-    }
+  public User findByEmail(final String email) {
+    return userRepository.findByEmail(email)
+        .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
+  }
+
+  public User findByRefreshToken(final String refreshToken) {
+    return userRepository.findByRefreshToken(refreshToken)
+        .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
+  }
+
+  public boolean isDuplicatedEmail(final String email) {
+    return userRepository.existsUserByEmail(email);
+  }
+
+  public boolean isDuplicatedNickname(final String nickname) {
+    return userRepository.existsUserByNickname(nickname);
+  }
 }
