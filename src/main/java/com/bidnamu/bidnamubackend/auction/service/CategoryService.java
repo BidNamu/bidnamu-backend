@@ -70,7 +70,7 @@ public class CategoryService {
             .build();
     }
 
-    private Category findCategoryById(final Long id) {
+    public Category findCategoryById(final Long id) {
         return categoryRepository.findById(id).orElseThrow(() ->
             new NoSuchElementException(CATEGORY_NOT_FOUND_MESSAGE.formatted(id)));
     }
