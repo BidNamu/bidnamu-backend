@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +17,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class User extends BaseTimeEntity {
 
   @Column(nullable = false, unique = true)
@@ -39,6 +36,13 @@ public class User extends BaseTimeEntity {
 
   @Column
   private String refreshToken;
+
+  @Builder
+  public User(String email, String password, String nickname) {
+    this.email = email;
+    this.password = password;
+    this.nickname = nickname;
+  }
 
   @ToString.Exclude
   @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,
