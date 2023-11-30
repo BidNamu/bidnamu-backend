@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,13 +24,14 @@ public class AuthService {
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final UserRepository userRepository;
 
-  public LoginResponseDto processLogin(LoginRequestDto requestDto) {
-    Authentication authentication = createAuthentication(requestDto);
+  @Transactional
+  public LoginResponseDto processLogin(final LoginRequestDto requestDto) {
+    final Authentication authentication = createAuthentication(requestDto);
 
-    String accessToken = tokenProvider.generateAccessToken(authentication);
-    String refreshToken = tokenProvider.generateRefreshToken();
+    final String accessToken = tokenProvider.generateAccessToken(authentication);
+    final String refreshToken = tokenProvider.generateRefreshToken();
 
-    User user = userRepository.findByEmail(authentication.getName())
+    final User user = userRepository.findByEmail(authentication.getName())
         .orElseThrow(() -> new UnknownUserException("유저를 찾을 수 없습니다."));
 
     user.updateRefreshToken(refreshToken);
@@ -37,10 +39,11 @@ public class AuthService {
     return new LoginResponseDto(accessToken, refreshToken);
   }
 
-  private Authentication createAuthentication(LoginRequestDto loginRequestDto) {
-    Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
+  private Authentication createAuthentication(final LoginRequestDto loginRequestDto) {
+    final Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
         loginRequestDto.email(), loginRequestDto.password());
-    var authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+    final var authentication = authenticationManagerBuilder.getObject()
+        .authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
     return authentication;
   }
