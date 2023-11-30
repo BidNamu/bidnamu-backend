@@ -1,75 +1,86 @@
 package com.bidnamu.bidnamubackend.auth.config;
 
-import com.bidnamu.bidnamubackend.user.domain.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.time.Duration;
-import java.util.Collections;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class TokenProvider {
 
+  private static final String AUTHORITIES_KEY = "authorities";
   private final JwtProperties jwtProperties;
+  private final Key key;
 
-  public String generateToken(final User user,final Duration expiredAt) {
-    Date now = new Date();
-    return makeToken(new Date(now.getTime() + expiredAt.toMillis()), user);
+  public TokenProvider(JwtProperties jwtProperties) {
+    this.jwtProperties = jwtProperties;
+    this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
   }
 
-  private String makeToken(final Date expiry,final User user) {
+  public String generateRefreshToken() {
+    final String uuid = UUID.randomUUID().toString();
+    final Date now = new Date();
+    final Date expirationDate = new Date(now.getTime() + jwtProperties.getRefreshTokenExpiration());
 
     return Jwts.builder()
-        .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-        .setIssuer(jwtProperties.getIssuer())
-        .setExpiration(expiry)
-        .setSubject(user.getEmail())
-        .claim("id", user.getId())
-        .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+        .setSubject(uuid)
+        .setIssuedAt(now)
+        .setExpiration(expirationDate)
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
+
+  public Authentication getAuthentication(final String token) {
+    final Claims claims = getClaims(token);
+    final Collection<? extends GrantedAuthority> authorities =
+        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+            .map(SimpleGrantedAuthority::new).collect(
+                Collectors.toSet());
+    final var user = new org.springframework.security.core.userdetails.User(claims.getSubject(), "",
+        authorities);
+
+    return new UsernamePasswordAuthenticationToken(user, token, authorities);
+  }
+
+  public String generateAccessToken(final Authentication authentication) {
+    final Set<String> authorities = authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority).collect(
+            Collectors.toSet());
+    final Date now = new Date();
+    final Date expirationDate = new Date(now.getTime() + jwtProperties.getAccessTokenExpiration());
+
+    return Jwts.builder()
+        .setSubject(authentication.getName())
+        .setIssuedAt(now)
+        .setExpiration(expirationDate)
+        .claim(AUTHORITIES_KEY, authorities)
+        .signWith(key, SignatureAlgorithm.HS256)
         .compact();
   }
 
   public boolean validToken(final String token) {
-    try {
-      Jwts.parser()
-          .setSigningKey(jwtProperties.getSecretKey())
-          .parseClaimsJws(token);
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
-  public Authentication getAuthentication(final String token) {
-    Claims claims = getClaims(token);
-    Set<SimpleGrantedAuthority> authorities = Collections.singleton(
-        new SimpleGrantedAuthority("ROLE_USER"));
-
-    return new UsernamePasswordAuthenticationToken(
-        new org.springframework.security.core.userdetails.User(claims.getSubject(), "",
-            authorities), token, authorities);
-  }
-
-  public Long getUserId(final String token) {
-    Claims claims = getClaims(token);
-    return claims.get("id", Long.class);
+    getClaims(token);
+    return true;
   }
 
   private Claims getClaims(final String token) {
-    return Jwts.parser()
-        .setSigningKey(jwtProperties.getSecretKey())
+    return Jwts.parserBuilder()
+        .setSigningKey(key)
+        .build()
         .parseClaimsJws(token)
         .getBody();
   }
-
-
 }
