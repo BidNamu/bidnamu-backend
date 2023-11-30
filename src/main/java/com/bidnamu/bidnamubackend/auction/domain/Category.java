@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.item.domain;
+package com.bidnamu.bidnamubackend.auction.domain;
 
 import com.bidnamu.bidnamubackend.global.domain.BaseEntity;
 import jakarta.persistence.CascadeType;

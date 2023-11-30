@@ -1,6 +1,6 @@
-package com.bidnamu.bidnamubackend.item.dto.response;
+package com.bidnamu.bidnamubackend.auction.dto.response;
 
-import com.bidnamu.bidnamubackend.item.domain.Category;
+import com.bidnamu.bidnamubackend.auction.domain.Category;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;

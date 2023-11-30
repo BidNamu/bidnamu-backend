@@ -1,9 +1,9 @@
-package com.bidnamu.bidnamubackend.item.service;
+package com.bidnamu.bidnamubackend.auction.service;
 
-import com.bidnamu.bidnamubackend.item.domain.Category;
-import com.bidnamu.bidnamubackend.item.dto.request.CategoryFormDto;
-import com.bidnamu.bidnamubackend.item.dto.response.CategoryResultDto;
-import com.bidnamu.bidnamubackend.item.repository.CategoryRepository;
+import com.bidnamu.bidnamubackend.auction.domain.Category;
+import com.bidnamu.bidnamubackend.auction.dto.request.CategoryFormDto;
+import com.bidnamu.bidnamubackend.auction.dto.response.CategoryResultDto;
+import com.bidnamu.bidnamubackend.auction.repository.CategoryRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;

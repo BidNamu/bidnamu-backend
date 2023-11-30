@@ -4,10 +4,10 @@ package com.bidnamu.bidnamubackend.category.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.bidnamu.bidnamubackend.item.domain.Category;
-import com.bidnamu.bidnamubackend.item.dto.request.CategoryFormDto;
-import com.bidnamu.bidnamubackend.item.repository.CategoryRepository;
-import com.bidnamu.bidnamubackend.item.service.CategoryService;
+import com.bidnamu.bidnamubackend.auction.domain.Category;
+import com.bidnamu.bidnamubackend.auction.dto.request.CategoryFormDto;
+import com.bidnamu.bidnamubackend.auction.repository.CategoryRepository;
+import com.bidnamu.bidnamubackend.auction.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
