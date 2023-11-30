@@ -18,9 +18,15 @@ public class AuthController {
 
   private final AuthService authService;
 
-  @PostMapping
-  public ResponseEntity<LoginResponseDto> processLogin(@RequestBody LoginRequestDto requestDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(authService.processLogin(requestDto));
+  @PostMapping("/login")
+  public ResponseEntity<LoginResponseDto> processLogin(
+      @RequestBody final LoginRequestDto requestDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.processLogin(requestDto));
+  }
+
+  @PostMapping("/reissue")
+  public ResponseEntity<LoginResponseDto> refreshToken(@RequestBody final String refreshToken) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(refreshToken));
   }
 
 }

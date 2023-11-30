@@ -4,8 +4,7 @@ import com.bidnamu.bidnamubackend.auth.config.TokenProvider;
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.user.domain.User;
-import com.bidnamu.bidnamubackend.user.exception.UnknownUserException;
-import com.bidnamu.bidnamubackend.user.repository.UserRepository;
+import com.bidnamu.bidnamubackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +21,7 @@ public class AuthService {
 
   private final TokenProvider tokenProvider;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
-  private final UserRepository userRepository;
+  private final UserService userService;
 
   @Transactional
   public LoginResponseDto processLogin(final LoginRequestDto requestDto) {
@@ -31,12 +30,24 @@ public class AuthService {
     final String accessToken = tokenProvider.generateAccessToken(authentication);
     final String refreshToken = tokenProvider.generateRefreshToken();
 
-    final User user = userRepository.findByEmail(authentication.getName())
-        .orElseThrow(() -> new UnknownUserException("유저를 찾을 수 없습니다."));
+    final User user = userService.findByEmail(authentication.getName());
 
     user.updateRefreshToken(refreshToken);
 
     return new LoginResponseDto(accessToken, refreshToken);
+  }
+
+  @Transactional
+  public LoginResponseDto refreshToken(final String refreshToken) {
+    tokenProvider.validToken(refreshToken);
+    final var user = userService.findByRefreshToken(refreshToken);
+    final Authentication authentication = tokenProvider.getAuthentication(user.getRefreshToken());
+    final String accessToken = tokenProvider.generateAccessToken(authentication);
+    final String generatedRefreshToken = tokenProvider.generateRefreshToken();
+
+    user.updateRefreshToken(refreshToken);
+
+    return new LoginResponseDto(accessToken, generatedRefreshToken);
   }
 
   private Authentication createAuthentication(final LoginRequestDto loginRequestDto) {
