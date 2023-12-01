@@ -1,11 +1,11 @@
 package com.bidnamu.bidnamubackend.global.exception.handler;
 
+import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import java.util.NoSuchElementException;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
