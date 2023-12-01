@@ -51,4 +51,17 @@ class AuthServiceTest {
 
   }
 
+  @Test
+  @Transactional
+  @DisplayName("액세스 토큰을 갱신한다.")
+  void RefreshToken() {
+    LoginRequestDto loginRequestDto = new LoginRequestDto(email,password);
+
+    LoginResponseDto responseDto = authService.processLogin(loginRequestDto);
+
+    Assertions.assertNotNull(authService.refreshToken(responseDto.refreshToken()));
+
+
+  }
+
 }
