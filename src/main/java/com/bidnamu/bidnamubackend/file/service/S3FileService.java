@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.service;
+package com.bidnamu.bidnamubackend.file.service;
 
 import com.bidnamu.bidnamubackend.global.util.FileNameUtils;
 import java.io.IOException;

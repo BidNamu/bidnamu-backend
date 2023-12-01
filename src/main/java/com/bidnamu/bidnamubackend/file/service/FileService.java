@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.service;
+package com.bidnamu.bidnamubackend.file.service;
 
 import java.util.Collection;
 import java.util.List;

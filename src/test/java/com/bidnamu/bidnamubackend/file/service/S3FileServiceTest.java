@@ -2,7 +2,6 @@ package com.bidnamu.bidnamubackend.file.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import com.bidnamu.bidnamubackend.global.service.FileService;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

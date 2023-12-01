@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.config;
+package com.bidnamu.bidnamubackend.file.config;
 
 import io.awspring.cloud.autoconfigure.core.CredentialsProperties;
 import io.awspring.cloud.autoconfigure.core.RegionProperties;
