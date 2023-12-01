@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.file.service;
 
+import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.util.FileNameUtils;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +26,9 @@ public class S3FileService implements FileService {
     private String bucket;
 
     @Override
-    public String uploadFile(final MultipartFile multipartFile) throws FileUploadException {
+    public String uploadFile(final MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
-            throw new FileUploadException("업로드 파일이 비어있습니다.");
+            throw new IllegalArgumentException("업로드할 파일이 비어있습니다.");
         }
         final String fileName = getFileName(multipartFile);
         try {
