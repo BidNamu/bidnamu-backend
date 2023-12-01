@@ -5,10 +5,13 @@ import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +42,15 @@ public class AuthService {
   public LoginResponseDto refreshToken(final String refreshToken) {
     tokenProvider.validToken(refreshToken);
     final var user = userService.findByRefreshToken(refreshToken);
-    final Authentication authentication = tokenProvider.getAuthentication(user.getRefreshToken());
+    final Collection<? extends GrantedAuthority> authorities = user.getAuthorities().stream()
+        .map(authority -> new SimpleGrantedAuthority(authority.getRole().toString()))
+        .toList();
+
+    final Authentication authentication = new UsernamePasswordAuthenticationToken(
+        user.getEmail(),
+        null,
+        authorities
+    );
     final String accessToken = tokenProvider.generateAccessToken(authentication);
     final String generatedRefreshToken = tokenProvider.generateRefreshToken();
 
