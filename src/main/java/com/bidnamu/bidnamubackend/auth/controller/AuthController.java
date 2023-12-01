@@ -1,6 +1,7 @@
 package com.bidnamu.bidnamubackend.auth.controller;
 
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
+import com.bidnamu.bidnamubackend.auth.dto.request.RefreshTokenRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,8 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<LoginResponseDto> refreshToken(@RequestBody final String refreshToken) {
-    return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(refreshToken));
+  public ResponseEntity<LoginResponseDto> refreshToken(@RequestBody final RefreshTokenRequestDto requestDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(requestDto.refreshToken()));
   }
 
 }
