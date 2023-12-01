@@ -1,6 +1,6 @@
 package com.bidnamu.bidnamubackend.global.exception.handler;
 
-import com.bidnamu.bidnamubackend.auth.exception.UnknownRefreshTokenException;
+import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
 import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
@@ -40,9 +40,9 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorResponse);
   }
 
-  @ExceptionHandler(UnknownRefreshTokenException.class)
+  @ExceptionHandler(UnknownTokenException.class)
   public ResponseEntity<ErrorResponse> handleUnknownRefreshTokenException(
-      final UnknownRefreshTokenException e
+      final UnknownTokenException e
   ) {
     final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorResponse);
