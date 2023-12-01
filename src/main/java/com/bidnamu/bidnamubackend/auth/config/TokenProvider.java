@@ -25,7 +25,7 @@ public class TokenProvider {
   private final JwtProperties jwtProperties;
   private final Key key;
 
-  public TokenProvider(JwtProperties jwtProperties) {
+  public TokenProvider(final JwtProperties jwtProperties) {
     this.jwtProperties = jwtProperties;
     this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
   }
