@@ -43,7 +43,7 @@ class S3FileServiceTest {
 
     @Test
     @DisplayName("MultipartFile 삭제 요청시 예외가 발생하지 않는다")
-    void testDeleteFile() throws Exception {
+    void testDeleteFile() {
         // Given
         final MultipartFile mockFile = new MockMultipartFile("file", "filename.txt", "text/plain",
             "test content".getBytes());
