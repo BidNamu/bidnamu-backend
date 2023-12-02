@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.auth.config;
 
+import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -56,6 +57,9 @@ public class TokenProvider {
   }
 
   public String generateAccessToken(final Authentication authentication) {
+    if(authentication.getAuthorities().isEmpty()) {
+      throw new UnknownTokenException("유효하지 않은 토큰입니다.");
+    }
     final Set<String> authorities = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority).collect(
             Collectors.toSet());

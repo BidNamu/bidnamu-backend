@@ -3,6 +3,7 @@ package com.bidnamu.bidnamubackend.auth.service;
 import com.bidnamu.bidnamubackend.auth.config.TokenProvider;
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
+import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import java.util.Collection;
@@ -40,7 +41,10 @@ public class AuthService {
 
   @Transactional
   public LoginResponseDto refreshToken(final String refreshToken) {
-    tokenProvider.validToken(refreshToken);
+
+    if (tokenProvider.validToken(refreshToken)) {
+      throw new UnknownTokenException("잘못되거나 만료된 토큰입니다.");
+    }
     final var user = userService.findByRefreshToken(refreshToken);
     final Collection<? extends GrantedAuthority> authorities = user.getAuthorities().stream()
         .map(authority -> new SimpleGrantedAuthority(authority.getRole().toString()))
@@ -67,6 +71,5 @@ public class AuthService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     return authentication;
   }
-
 
 }
