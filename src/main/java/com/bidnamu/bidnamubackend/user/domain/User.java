@@ -19,39 +19,46 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
-    @Column(nullable = false, unique = true)
-    private String email;
+  @Column(nullable = false, unique = true)
+  private String email;
 
-    @Column(nullable = false)
-    private String password;
+  @Column(nullable = false)
+  private String password;
 
-    @Column(nullable = false, unique = true)
-    private String nickname;
+  @Column(nullable = false, unique = true)
+  private String nickname;
 
-    @Column(nullable = false)
-    private boolean enabled = true;
+  @Column(nullable = false)
+  private boolean enabled = true;
 
-    @Column(nullable = false)
-    private boolean expired = false;
+  @Column(nullable = false)
+  private boolean expired = false;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private final Set<Authority> authorities = new HashSet<>();
+  @Column
+  private String refreshToken;
 
-    @Builder
-    public User(String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
+  @Builder
+  public User(String email, String password, String nickname) {
+    this.email = email;
+    this.password = password;
+    this.nickname = nickname;
+  }
+
+  @ToString.Exclude
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,
+      CascadeType.REMOVE})
+  private final Set<Authority> authorities = new HashSet<>();
+
+  public void addAuthority(Role role) {
+    if (!this.authorities.isEmpty() && (authorities.stream()
+        .anyMatch(authority -> authority.getRole().equals(role)))) {
+      throw new IllegalArgumentException("해당 유저는 이미 해당 권한을 가지고 있습니다.");
     }
+    Authority authority = Authority.builder().role(role).user(this).build();
+    this.authorities.add(authority);
+  }
 
-    public void addAuthority(Role role) {
-        if (!this.authorities.isEmpty() && (authorities.stream().anyMatch(authority -> authority.getRole().equals(role)))) {
-                throw new IllegalArgumentException("해당 유저는 이미 해당 권한을 가지고 있습니다.");
-        }
-            Authority authority = new Authority();
-            authority.setRole(role);
-            authority.setUser(this);
-            this.authorities.add(authority);
-    }
+  public void updateRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }
