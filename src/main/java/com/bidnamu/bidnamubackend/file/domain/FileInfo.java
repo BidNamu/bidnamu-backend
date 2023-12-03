@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.file.domain;
 
+import com.bidnamu.bidnamubackend.global.util.FileNameUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -29,4 +30,12 @@ public class FileInfo {
     private Long fileSize;
     @Column(nullable = false)
     private String contentType;
+
+    public static FileInfo from(final String originalFileName) {
+        return FileInfo.builder()
+            .fileName(FileNameUtils.getFileName(originalFileName))
+            .originalFileName(originalFileName)
+            .extension(FileNameUtils.getExtension(originalFileName))
+            .build();
+    }
 }

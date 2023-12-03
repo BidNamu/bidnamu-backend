@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.file.service;
 
+import com.bidnamu.bidnamubackend.file.domain.FileInfo;
 import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.util.FileNameUtils;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class S3FileService implements FileService {
     private String bucket;
 
     @Override
-    public String uploadFile(final MultipartFile multipartFile) {
+    public FileInfo uploadFile(final MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             throw new IllegalArgumentException("업로드할 파일이 비어있습니다.");
         }
@@ -39,13 +40,13 @@ public class S3FileService implements FileService {
             throw new FileUploadException("파일 업로드에 실패하였습니다: " + e.getMessage());
         }
 
-        return fileName;
+        return FileInfo.from(fileName);
     }
 
     @Override
-    public List<String> uploadFiles(final Collection<MultipartFile> multipartFiles)
+    public List<FileInfo> uploadFiles(final Collection<MultipartFile> multipartFiles)
         throws FileUploadException {
-        final List<String> results = new ArrayList<>();
+        final List<FileInfo> results = new ArrayList<>();
         for (final var multipartFile : multipartFiles) {
             results.add(uploadFile(multipartFile));
         }

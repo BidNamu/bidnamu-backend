@@ -47,7 +47,7 @@ class S3FileServiceTest {
         // Given
         final MultipartFile mockFile = new MockMultipartFile("file", "filename.txt", "text/plain",
             "test content".getBytes());
-        final String fileKey = fileService.uploadFile(mockFile);
+        final String fileKey = fileService.uploadFile(mockFile).getOriginalFileName();
 
         // Then
         assertDoesNotThrow(() -> fileService.deleteFile(fileKey));
