@@ -1,6 +1,7 @@
 package com.bidnamu.bidnamubackend.global.exception.handler;
 
 import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
+import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
@@ -11,6 +12,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.security.SignatureException;
+import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -91,11 +93,24 @@ public class GlobalExceptionHandler {
     final var errorResponse = createErrorResponse(INVALID_PARAMETER, error.getDefaultMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
   }
+  
+  @ExceptionHandler(FileUploadException.class)
+  public ResponseEntity<ErrorResponse> handleFileUploadException(
+      final FileUploadException e) {
+    final var errorResponse = createErrorResponse(BAD_REQUEST, e.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
+
+  @ExceptionHandler(NoSuchElementException.class)
+  public ResponseEntity<ErrorResponse> handleNoSuchElementException(
+      final NoSuchElementException e) {
+    final var errorResponse = createErrorResponse(RESOURCE_NOT_FOUND, e.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+  }
 
   private ErrorResponse createErrorResponse(final CommonErrorCode errorCode,
       final String explain) {
     return ErrorResponse.builder().code(errorCode).message(errorCode.getMessage())
         .explain(explain).build();
   }
-
 }
