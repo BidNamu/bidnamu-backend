@@ -25,3 +25,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+  jwt:
+    issuer: kimmin1
+    secret-key: YWprbGdoc2Rma2xnanNkaGZnbGprc2RmZ2hsc2ss22FRsas56
+    access-token-expiration: 604_800_900
+    refresh-token-expiration: 604_800_900
