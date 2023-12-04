@@ -48,7 +48,11 @@ public class S3FileService implements FileService {
         throws FileUploadException {
         final List<FileInfo> results = new ArrayList<>();
         for (final var multipartFile : multipartFiles) {
-            results.add(uploadFile(multipartFile));
+            try {
+                results.add(uploadFile(multipartFile));
+            } catch (FileUploadException e) {
+                results.forEach(fileInfo -> deleteFile(fileInfo.getOriginalFileName()));
+            }
         }
         return results;
     }
