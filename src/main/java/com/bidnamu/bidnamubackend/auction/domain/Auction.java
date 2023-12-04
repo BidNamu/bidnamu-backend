@@ -1,6 +1,5 @@
 package com.bidnamu.bidnamubackend.auction.domain;
 
-import com.bidnamu.bidnamubackend.auction.exception.DuplicatedRepresentAuctionImageException;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -97,9 +96,6 @@ public class Auction extends BaseTimeEntity {
     }
 
     public void addAuctionImage(final AuctionImage auctionImage) {
-        if (auctionImages.stream().anyMatch(AuctionImage::isRepresent)) {
-            throw new DuplicatedRepresentAuctionImageException("대표 이미지가 이미 존재합니다.");
-        }
         this.auctionImages.add(auctionImage);
     }
 }

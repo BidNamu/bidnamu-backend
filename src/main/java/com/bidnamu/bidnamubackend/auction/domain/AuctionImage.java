@@ -2,7 +2,6 @@ package com.bidnamu.bidnamubackend.auction.domain;
 
 import com.bidnamu.bidnamubackend.file.domain.FileInfo;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -22,9 +21,6 @@ public class AuctionImage extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Auction auction;
-
-    @Column(nullable = false)
-    private boolean represent = false;
 
     @Embedded
     private FileInfo fileInfo;
