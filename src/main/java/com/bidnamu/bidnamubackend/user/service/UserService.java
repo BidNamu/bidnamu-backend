@@ -31,7 +31,7 @@ public class UserService {
     }
 
     final User user = userRepository.save(form.toEntity(passwordEncoder));
-    user.addAuthority(Role.USER);
+    user.addAuthority(Role.ROLE_USER);
     return RegistrationResponseDto.from(user);
   }
 
