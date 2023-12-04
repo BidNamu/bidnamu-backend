@@ -98,4 +98,12 @@ public class Auction extends BaseTimeEntity {
     public void addAuctionImage(final AuctionImage auctionImage) {
         this.auctionImages.add(auctionImage);
     }
+
+    public String getCategoryName() {
+        return category.getName();
+    }
+
+    public List<String> getImageOriginalFileNames() {
+        return auctionImages.stream().map(AuctionImage::getOriginalFileName).toList();
+    }
 }

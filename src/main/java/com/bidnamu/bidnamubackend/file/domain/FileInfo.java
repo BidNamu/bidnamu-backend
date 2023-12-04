@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,11 +32,13 @@ public class FileInfo {
     @Column(nullable = false)
     private String contentType;
 
-    public static FileInfo from(final String originalFileName) {
+    public static FileInfo of(final String originalFileName, final MultipartFile file) {
         return FileInfo.builder()
             .fileName(FileNameUtils.getFileName(originalFileName))
             .originalFileName(originalFileName)
             .extension(FileNameUtils.getExtension(originalFileName))
+            .fileSize(file.getSize())
+            .contentType(file.getContentType())
             .build();
     }
 }

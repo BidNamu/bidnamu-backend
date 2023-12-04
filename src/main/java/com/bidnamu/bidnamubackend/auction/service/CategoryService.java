@@ -3,10 +3,12 @@ package com.bidnamu.bidnamubackend.auction.service;
 import com.bidnamu.bidnamubackend.auction.domain.Category;
 import com.bidnamu.bidnamubackend.auction.dto.request.CategoryFormDto;
 import com.bidnamu.bidnamubackend.auction.dto.response.CategoryResultDto;
+import com.bidnamu.bidnamubackend.auction.exception.InvalidCategoryDepthException;
 import com.bidnamu.bidnamubackend.auction.repository.CategoryRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,8 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Value("${auction.sub-category-depth}")
+    private int subCategoryDepth;
     private static final String CATEGORY_NOT_FOUND_MESSAGE = "해당 Category를 찾을 수 없습니다 : %d";
 
     @Transactional(readOnly = true)
@@ -58,6 +62,12 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(final Long id) {
         categoryRepository.delete(findCategoryById(id));
+    }
+
+    public void validSubCategory(final Category category) {
+        if (category.getDepth() != subCategoryDepth) {
+            throw new InvalidCategoryDepthException("해당 카테고리는 서브 카테고리가 아닙니다: " + category.getId());
+        }
     }
 
     private Category toEntity(final CategoryFormDto categoryFormDto) {

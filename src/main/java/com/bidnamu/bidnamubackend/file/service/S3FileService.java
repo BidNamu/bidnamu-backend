@@ -40,7 +40,7 @@ public class S3FileService implements FileService {
             throw new FileUploadException("파일 업로드에 실패하였습니다: " + e.getMessage());
         }
 
-        return FileInfo.from(fileName);
+        return FileInfo.of(fileName, multipartFile);
     }
 
     @Override

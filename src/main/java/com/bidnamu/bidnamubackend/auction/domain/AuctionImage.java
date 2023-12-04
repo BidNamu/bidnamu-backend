@@ -10,12 +10,16 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class AuctionImage extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,4 +28,8 @@ public class AuctionImage extends BaseTimeEntity {
 
     @Embedded
     private FileInfo fileInfo;
+
+    public String getOriginalFileName() {
+        return fileInfo.getOriginalFileName();
+    }
 }
