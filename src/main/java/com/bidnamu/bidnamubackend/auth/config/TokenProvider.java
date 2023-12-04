@@ -46,10 +46,11 @@ public class TokenProvider {
 
   public Authentication getAuthentication(final String token) {
     final Claims claims = getClaims(token);
+    final String authoritiesStr = claims.get(AUTHORITIES_KEY).toString()
+        .replaceAll("[\\[\\]\\s]", "");
     final Collection<? extends GrantedAuthority> authorities =
-        Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-            .map(SimpleGrantedAuthority::new).collect(
-                Collectors.toSet());
+        Arrays.stream(authoritiesStr.split(","))
+            .map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     final var user = new org.springframework.security.core.userdetails.User(claims.getSubject(), "",
         authorities);
 
@@ -57,7 +58,7 @@ public class TokenProvider {
   }
 
   public String generateAccessToken(final Authentication authentication) {
-    if(authentication.getAuthorities().isEmpty()) {
+    if (authentication.getAuthorities().isEmpty()) {
       throw new UnknownTokenException("유효하지 않은 토큰입니다.");
     }
     final Set<String> authorities = authentication.getAuthorities().stream()
