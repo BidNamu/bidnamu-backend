@@ -11,7 +11,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,7 +25,6 @@ public class AuctionController {
     private final AuctionService auctionService;
 
     @PostMapping
-    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<AuctionDetailResponseDto> createAuction(
         final Principal principal,
         @RequestPart final List<MultipartFile> images,
