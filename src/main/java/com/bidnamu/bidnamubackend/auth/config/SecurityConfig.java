@@ -20,6 +20,7 @@ public class SecurityConfig {
   private final CorsFilter corsFilter;
   private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -29,7 +30,8 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
-        .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(corsFilter, CorsFilter.class)
+        .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .csrf(AbstractHttpConfigurer::disable)
         .exceptionHandling(e -> {
               e.accessDeniedHandler(jwtAccessDeniedHandler);
@@ -40,6 +42,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(registry -> registry
             .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
             .requestMatchers("/", "/**").permitAll())
+        )
         .getOrBuild();
 
   }
