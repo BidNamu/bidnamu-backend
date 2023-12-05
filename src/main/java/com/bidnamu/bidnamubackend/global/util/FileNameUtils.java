@@ -13,10 +13,14 @@ public class FileNameUtils {
     }
 
     public static String buildFileName(final String originalFileName) {
-        final int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
-        final String fileExtension = originalFileName.substring(fileExtensionIndex);
-        final String fileName = originalFileName.substring(0, fileExtensionIndex);
+        final String fileExtension = getExtension(originalFileName);
+        final String fileName = getFileName(originalFileName);
         final String now = String.valueOf(System.currentTimeMillis()); // 파일 업로드 시간
         return fileName + "_" + now + fileExtension;
+    }
+
+    public static String getExtension(final String originalFilename) {
+        final int fileExtensionIndex = originalFilename.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+        return originalFilename.substring(fileExtensionIndex);
     }
 }

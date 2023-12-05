@@ -20,3 +20,6 @@ spring:
         static: ap-northeast-2
       s3:
         bucket: ${S3_BUCKET_NAME}
+
+auction:
+  sub-category-depth: 2

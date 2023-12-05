@@ -1,10 +1,10 @@
-package com.bidnamu.bidnamubackend.item.controller;
+package com.bidnamu.bidnamubackend.auction.controller;
 
 import static com.bidnamu.bidnamubackend.global.util.HttpStatusResponseEntity.*;
 
-import com.bidnamu.bidnamubackend.item.dto.request.CategoryFormDto;
-import com.bidnamu.bidnamubackend.item.dto.response.CategoryResultDto;
-import com.bidnamu.bidnamubackend.item.service.CategoryService;
+import com.bidnamu.bidnamubackend.auction.dto.request.CategoryFormDto;
+import com.bidnamu.bidnamubackend.auction.dto.response.CategoryResultDto;
+import com.bidnamu.bidnamubackend.auction.service.CategoryService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

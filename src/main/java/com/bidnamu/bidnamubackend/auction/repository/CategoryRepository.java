@@ -1,6 +1,6 @@
-package com.bidnamu.bidnamubackend.item.repository;
+package com.bidnamu.bidnamubackend.auction.repository;
 
-import com.bidnamu.bidnamubackend.item.domain.Category;
+import com.bidnamu.bidnamubackend.auction.domain.Category;
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 

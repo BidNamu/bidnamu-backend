@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.item.dto.request;
+package com.bidnamu.bidnamubackend.auction.dto.request;
 
 import lombok.Builder;
 
