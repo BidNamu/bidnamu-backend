@@ -29,8 +29,8 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
-        .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(tokenAuthenticationFilter, CorsFilter.class)
+        .addFilterBefore(corsFilter, CorsFilter.class)
+        .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .csrf(AbstractHttpConfigurer::disable)
         .exceptionHandling(e -> {
               e.accessDeniedHandler(jwtAccessDeniedHandler);
@@ -38,7 +38,9 @@ public class SecurityConfig {
             }
         )
         .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(registry -> registry.requestMatchers("/", "/**").permitAll())
+        .authorizeHttpRequests(registry -> registry
+            .requestMatchers("/", "/**").permitAll()
+        )
         .getOrBuild();
 
   }
