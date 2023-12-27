@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 .nickname("kimmin")
                 .password("1234")
                 .build();
-        this.user.addAuthority(Role.USER);
+        this.user.addAuthority(Role.ROLE_USER);
     }
 
     @Test
@@ -26,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
     @Test
     void testAddMoreAuthority() {
-        user.addAuthority(Role.ADMIN);
+        user.addAuthority(Role.ROLE_ADMIN);
         assertEquals(2, user.getAuthorities().size());
     }
 
     @Test
     void testAddSameAuthority() {
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            user.addAuthority(Role.USER);
+            user.addAuthority(Role.ROLE_USER);
         });
         assertEquals("해당 유저는 이미 해당 권한을 가지고 있습니다.", exception.getMessage());
     }
