@@ -17,7 +17,8 @@ public record CreateAuctionRequestDto(
     @NotNull(message = "공백 카테고리 ID 는 허용되지 않습니다.")
     Long categoryId,
     @Future(message = "경매 종료 시간은 과거일 수 없습니다.")
-    LocalDateTime closingTime
+    LocalDateTime closingTime,
+    boolean fixedPrice
 ) {
 
 }

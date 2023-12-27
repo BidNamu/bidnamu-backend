@@ -15,6 +15,7 @@ public record CreateAuctionDto(
     Long categoryId,
     int startingBid,
     LocalDateTime closingTime,
+    boolean fixedPrice,
     List<MultipartFile> images
 ) {
 
@@ -29,6 +30,7 @@ public record CreateAuctionDto(
             requestDto.categoryId(),
             requestDto.startingBid(),
             requestDto.closingTime(),
+            requestDto.fixedPrice(),
             images
         );
     }
@@ -41,6 +43,7 @@ public record CreateAuctionDto(
             .category(category)
             .startingBid(startingBid)
             .closingTime(closingTime)
+            .fixedPrice(fixedPrice)
             .build();
     }
 }

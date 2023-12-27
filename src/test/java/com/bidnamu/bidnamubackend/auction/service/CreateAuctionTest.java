@@ -66,7 +66,7 @@ class CreateAuctionTest {
     void testCreateAuction_success() {
         // Given
         final CreateAuctionDto dto = new CreateAuctionDto("title", "description", "seller", 1L, 0,
-            LocalDateTime.now(), images);
+            LocalDateTime.now(), false, images);
 
         // When
         when(userService.findByEmail(any())).thenReturn(seller);
@@ -84,7 +84,7 @@ class CreateAuctionTest {
     void testCreateAuction_InvalidCategoryDepthException() {
         // Given
         final CreateAuctionDto dto = new CreateAuctionDto("title", "description", "seller", 1L, 0,
-            LocalDateTime.now(), images);
+            LocalDateTime.now(), false, images);
 
         // When
         when(userService.findByEmail(any())).thenReturn(seller);
@@ -108,6 +108,7 @@ class CreateAuctionTest {
     }
 
     private void setUpAuction() {
-        auction = new Auction("title", "description", seller, mockCategory, 0, LocalDateTime.now());
+        auction = new Auction("title", "description", seller, mockCategory, 0, LocalDateTime.now(),
+            false);
     }
 }
