@@ -17,33 +17,34 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class SecurityConfig {
 
-  private final CorsFilter corsFilter;
-  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-  private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final CorsFilter corsFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity
-        .addFilterBefore(corsFilter, CorsFilter.class)
-        .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .csrf(AbstractHttpConfigurer::disable)
-        .exceptionHandling(e -> {
-              e.accessDeniedHandler(jwtAccessDeniedHandler);
-              e.authenticationEntryPoint(jwtAuthenticationEntryPoint);
-            }
-        )
-        .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(registry -> registry
-            .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
-            .requestMatchers("/", "/**").permitAll()
-        )
-        .getOrBuild();
-
-  }
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+            .addFilterBefore(corsFilter, CorsFilter.class)
+            .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .csrf(AbstractHttpConfigurer::disable)
+            .exceptionHandling(e -> {
+                    e.accessDeniedHandler(jwtAccessDeniedHandler);
+                    e.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                }
+            )
+            .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(registry -> registry
+                .requestMatchers(HttpMethod.PATCH, "/users/{email}/status").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
+                .requestMatchers(HttpMethod.PATCH, "/users/status").hasRole("USER")
+                .requestMatchers("/", "/**").permitAll()
+            )
+            .getOrBuild();
+    }
 }
