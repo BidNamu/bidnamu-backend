@@ -3,7 +3,9 @@ package com.bidnamu.bidnamubackend.user.service;
 import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.response.UserStatusUpdateResponseDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import com.bidnamu.bidnamubackend.user.exception.UnknownUserException;
@@ -17,39 +19,47 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-  @Transactional
-  public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
-    if (isDuplicatedEmail(form.email())) {
-      throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
+    @Transactional
+    public RegistrationResponseDto createUser(final RegistrationRequestDto form) {
+        if (isDuplicatedEmail(form.email())) {
+            throw new DuplicatedEmailException("이미 존재하는 이메일입니다.");
+        }
+
+        if (isDuplicatedNickname(form.nickname())) {
+            throw new DuplicatedNicknameException("이미 존재하는 닉네임입니다.");
+        }
+
+        final User user = userRepository.save(form.toEntity(passwordEncoder));
+        user.addAuthority(Role.ROLE_USER);
+        return RegistrationResponseDto.from(user);
     }
 
-    if (isDuplicatedNickname(form.nickname())) {
-      throw new DuplicatedNicknameException("이미 존재하는 닉네임입니다.");
+    public User findByEmail(final String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
     }
 
-    final User user = userRepository.save(form.toEntity(passwordEncoder));
-    user.addAuthority(Role.ROLE_USER);
-    return RegistrationResponseDto.from(user);
-  }
+    public User findByRefreshToken(final String refreshToken) {
+        return userRepository.findByRefreshToken(refreshToken)
+            .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
+    }
 
-  public User findByEmail(final String email) {
-    return userRepository.findByEmail(email)
-        .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
-  }
+    public boolean isDuplicatedEmail(final String email) {
+        return userRepository.existsUserByEmail(email);
+    }
 
-  public User findByRefreshToken(final String refreshToken) {
-    return userRepository.findByRefreshToken(refreshToken)
-        .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
-  }
+    public boolean isDuplicatedNickname(final String nickname) {
+        return userRepository.existsUserByNickname(nickname);
+    }
 
-  public boolean isDuplicatedEmail(final String email) {
-    return userRepository.existsUserByEmail(email);
-  }
-
-  public boolean isDuplicatedNickname(final String nickname) {
-    return userRepository.existsUserByNickname(nickname);
-  }
+    @Transactional
+    public UserStatusUpdateResponseDto updateUserStatus(final String email,
+        final UserStatusUpdateRequestDto dto) {
+        final User user = findByEmail(email);
+        user.updateStatus(dto);
+        return UserStatusUpdateResponseDto.from(user);
+    }
 }
