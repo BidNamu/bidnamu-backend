@@ -1,7 +1,7 @@
 package com.bidnamu.bidnamubackend.user.controller;
 
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.response.RegistrationResponseDto;
 import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
 import com.bidnamu.bidnamubackend.user.dto.response.UserStatusUpdateResponseDto;
 import com.bidnamu.bidnamubackend.user.service.UserService;
@@ -30,13 +30,13 @@ public class UserController {
 
     @GetMapping("/email/duplicated/{email}")
     public ResponseEntity<HttpStatus> isDuplicatedEmail(@PathVariable final String email) {
-        boolean duplicated = userService.isDuplicatedEmail(email);
+        final boolean duplicated = userService.isDuplicatedEmail(email);
         return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
     }
 
     @GetMapping("/nickname/duplicated/{nickname}")
     public ResponseEntity<HttpStatus> isDuplicatedNickname(@PathVariable final String nickname) {
-        boolean duplicated = userService.isDuplicatedNickname(nickname);
+        final boolean duplicated = userService.isDuplicatedNickname(nickname);
         return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
     }
 

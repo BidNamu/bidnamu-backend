@@ -16,7 +16,7 @@ public class CorsFilterConfig {
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);
     }

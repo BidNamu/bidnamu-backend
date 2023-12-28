@@ -23,14 +23,14 @@ class RoutingDataSourceConfigTest {
     void testMasterDataSourceReplication() throws Exception {
 
         // Given
-        RoutingDataSource routingDataSource = new RoutingDataSource();
+        final RoutingDataSource routingDataSource = new RoutingDataSource();
 
         // When
-        Method declaredMethod = RoutingDataSource.class.getDeclaredMethod(
+        final Method declaredMethod = RoutingDataSource.class.getDeclaredMethod(
             DETERMINE_CURRENT_LOOKUP_KEY);
         declaredMethod.setAccessible(true);
 
-        Object object = declaredMethod.invoke(routingDataSource);
+        final Object object = declaredMethod.invoke(routingDataSource);
 
         // Then
         log.info("object : [{}]", object);
@@ -43,14 +43,14 @@ class RoutingDataSourceConfigTest {
     void testSlaveDataSourceReplication() throws Exception {
 
         // Given
-        RoutingDataSource routingDataSource = new RoutingDataSource();
+        final RoutingDataSource routingDataSource = new RoutingDataSource();
 
         // When
-        Method declaredMethod = RoutingDataSource.class.getDeclaredMethod(
+        final Method declaredMethod = RoutingDataSource.class.getDeclaredMethod(
             DETERMINE_CURRENT_LOOKUP_KEY);
         declaredMethod.setAccessible(true);
 
-        Object object = declaredMethod.invoke(routingDataSource);
+        final Object object = declaredMethod.invoke(routingDataSource);
 
         // Then
         log.info("object : [{}]", object);

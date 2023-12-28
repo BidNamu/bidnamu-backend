@@ -37,13 +37,13 @@ class ReplicationServiceTest {
     @DisplayName("Master 데이터베이스에 저장한 엔티티와 Slave 에서 해당 아이디로 조회한 엔티티는 같아야 한다")
     @Transactional
     void testMasterSlaveReplication() {
-        String testData = "Test Data";
+        final String testData = "Test Data";
 
-        TestEntity newEntity = new TestEntity();
+        final TestEntity newEntity = new TestEntity();
         newEntity.setData(testData);
         testEntityRepository.save(newEntity);
 
-        TestEntity foundEntity = testEntityRepository.findById(newEntity.getId()).orElse(null);
+        final TestEntity foundEntity = testEntityRepository.findById(newEntity.getId()).orElse(null);
         assertNotNull(foundEntity);
         assertEquals(testData, foundEntity.getData());
     }

@@ -2,7 +2,7 @@ package com.bidnamu.bidnamubackend.user.exception;
 
 public class UnknownUserException extends IllegalArgumentException {
 
-  public UnknownUserException(String message) {
+  public UnknownUserException(final String message) {
     super(message);
   }
 }

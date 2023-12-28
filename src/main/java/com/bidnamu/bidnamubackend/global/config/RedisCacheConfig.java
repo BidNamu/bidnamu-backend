@@ -29,7 +29,7 @@ public class RedisCacheConfig {
 
     @Bean(name = CONNECTION_FACTORY)
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration
+        final RedisStandaloneConfiguration redisStandaloneConfiguration
             = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(hostName);
         redisStandaloneConfiguration.setPort(port);
@@ -41,8 +41,8 @@ public class RedisCacheConfig {
      */
     @Bean
     public RedisCacheManager redisCacheManager(
-        @Qualifier(CONNECTION_FACTORY) RedisConnectionFactory redisConnectionFactory) {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
+        @Qualifier(CONNECTION_FACTORY) final RedisConnectionFactory redisConnectionFactory) {
+        final RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
             .defaultCacheConfig()
             .serializeKeysWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(

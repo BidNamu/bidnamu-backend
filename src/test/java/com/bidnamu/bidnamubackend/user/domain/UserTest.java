@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
     @Test
     void testAddSameAuthority() {
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             user.addAuthority(Role.ROLE_USER);
         });
         assertEquals("해당 유저는 이미 해당 권한을 가지고 있습니다.", exception.getMessage());
