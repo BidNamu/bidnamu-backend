@@ -40,11 +40,11 @@ public class DataSourceConfig {
     @Bean
     @DependsOn({MASTER_DATASOURCE, SLAVE_DATASOURCE})
     public DataSource routingDataSource(
-        @Qualifier(MASTER_DATASOURCE) DataSource masterDataSource,
-        @Qualifier(SLAVE_DATASOURCE) DataSource slaveDataSource
+        @Qualifier(MASTER_DATASOURCE) final DataSource masterDataSource,
+        @Qualifier(SLAVE_DATASOURCE) final DataSource slaveDataSource
     ) {
-        RoutingDataSource routingDataSource = new RoutingDataSource();
-        Map<Object, Object> dataSources = new HashMap<>();
+        final RoutingDataSource routingDataSource = new RoutingDataSource();
+        final Map<Object, Object> dataSources = new HashMap<>();
         dataSources.put(DataSourceType.MASTER, masterDataSource);
         dataSources.put(DataSourceType.SLAVE, slaveDataSource);
         routingDataSource.setTargetDataSources(dataSources);
@@ -55,7 +55,7 @@ public class DataSourceConfig {
     @Primary
     @Bean
     @DependsOn("routingDataSource")
-    public LazyConnectionDataSourceProxy dataSource(DataSource routingDataSource) {
+    public LazyConnectionDataSourceProxy dataSource(final DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 }

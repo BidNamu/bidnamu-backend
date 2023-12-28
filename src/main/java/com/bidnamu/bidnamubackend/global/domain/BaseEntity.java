@@ -27,10 +27,10 @@ public class BaseEntity {
         if (!(o instanceof BaseEntity that)) {
             return false;
         }
-        Class<?> oEffectiveClass = o instanceof HibernateProxy hibernateProxy
+        final Class<?> oEffectiveClass = o instanceof HibernateProxy hibernateProxy
             ? hibernateProxy.getHibernateLazyInitializer()
             .getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy
+        final Class<?> thisEffectiveClass = this instanceof HibernateProxy hibernateProxy
             ? hibernateProxy.getHibernateLazyInitializer()
             .getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) {
