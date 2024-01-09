@@ -20,8 +20,9 @@ public class CreditController {
     private final CreditService creditService;
 
     @PostMapping("/transactions/{impUid}")
-    public IamportResponse<Payment> chargeCredit(Principal principal, @PathVariable String impUid)
-        throws IamportResponseException, IOException {
+    public IamportResponse<Payment> chargeCredit(
+        final Principal principal, final @PathVariable String impUid
+    ) throws IamportResponseException, IOException {
         return creditService.createPayment(principal.getName(), impUid);
     }
 }
