@@ -19,6 +19,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -56,6 +57,12 @@ dependencies {
     // AWS
     implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:3.0.3')
     implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.3")
+
+    // 포트원 결제
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
+    // 포트원 하위 라이브러리의 취약점으로 인한 버전 지정
+    implementation 'com.squareup.okio:okio-jvm:3.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 }
 
 tasks.named('bootBuildImage') {
