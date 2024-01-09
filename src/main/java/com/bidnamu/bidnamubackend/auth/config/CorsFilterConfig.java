@@ -10,7 +10,7 @@ import org.springframework.web.filter.CorsFilter;
 public class CorsFilterConfig {
     @Bean
     public CorsFilter corsFilter() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("*");
         configuration.addAllowedOriginPattern("*");

@@ -17,7 +17,7 @@ public class BaseEntity {
     private Long id;
 
     @Override
-    public final boolean equals(Object o) {
+    public final boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

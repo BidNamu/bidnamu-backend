@@ -31,7 +31,7 @@ class DataSourceConfigTest {
         final String username = environment.getProperty("spring.datasource.master.hikari.username");
 
         // When
-        try (HikariDataSource hikariDataSource = (HikariDataSource) masterDataSource) {
+        try (final HikariDataSource hikariDataSource = (HikariDataSource) masterDataSource) {
 
             // Then
             log.info("hikariDataSource : [{}]", hikariDataSource);
