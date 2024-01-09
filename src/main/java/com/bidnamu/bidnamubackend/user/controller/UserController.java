@@ -2,17 +2,15 @@ package com.bidnamu.bidnamubackend.user.controller;
 
 import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.response.UserStatusUpdateResponseDto;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.bidnamu.bidnamubackend.global.util.HttpStatusResponseEntity.*;
 
@@ -40,5 +38,20 @@ public class UserController {
     public ResponseEntity<HttpStatus> isDuplicatedNickname(@PathVariable final String nickname) {
         boolean duplicated = userService.isDuplicatedNickname(nickname);
         return duplicated ? RESPONSE_CONFLICT : RESPONSE_OK;
+    }
+
+    @PatchMapping("/status/expired")
+    public ResponseEntity<UserStatusUpdateResponseDto> updateUserStatus(
+        final Principal principal
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.updateUserStatus(principal.getName(),
+                UserStatusUpdateRequestDto.expireRequestDto()));
+    }
+
+    @PatchMapping("/{email}/status")
+    public ResponseEntity<UserStatusUpdateResponseDto> updateUserStatusByAdmin(
+        @RequestBody final UserStatusUpdateRequestDto dto, @PathVariable final String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUserStatus(email, dto));
     }
 }
