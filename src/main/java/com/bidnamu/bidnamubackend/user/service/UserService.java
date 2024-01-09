@@ -2,9 +2,9 @@ package com.bidnamu.bidnamubackend.user.service;
 
 import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.user.domain.User;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.response.RegistrationResponseDto;
 import com.bidnamu.bidnamubackend.user.dto.response.UserStatusUpdateResponseDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;

@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.user.dto;
+package com.bidnamu.bidnamubackend.user.dto.request;
 
 import com.bidnamu.bidnamubackend.user.domain.User;
 import jakarta.validation.constraints.*;
@@ -14,7 +14,7 @@ public record RegistrationRequestDto(
                 regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#!~$%^=()])(?=\\S+$).{8,16}$")
         String password) {
 
-    public User toEntity(PasswordEncoder passwordEncoder) {
+    public User toEntity(final PasswordEncoder passwordEncoder) {
         return User.builder()
                 .email(this.email)
                 .password(passwordEncoder.encode(this.password))
