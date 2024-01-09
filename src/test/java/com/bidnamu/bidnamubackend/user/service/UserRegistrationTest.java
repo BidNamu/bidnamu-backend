@@ -1,7 +1,7 @@
 package com.bidnamu.bidnamubackend.user.service;
 
 import com.bidnamu.bidnamubackend.user.domain.User;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
@@ -27,14 +27,14 @@ class UserRegistrationTest {
     @DisplayName("사용자가 회원가입을 요청하였을 경우 요청한 정보대로 DB에 저장된다")
     void successToRegistration() {
         // Given
-        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+        final RegistrationRequestDto requestDto = new RegistrationRequestDto(
             "rudals1888@gmail.com", "kimkim", "fefefass1Z!z");
 
         // When
         userService.createUser(requestDto);
 
         // Then
-        User foundUser = userRepository.findByEmail(requestDto.email())
+        final User foundUser = userRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         assertEquals(foundUser.getEmail(), requestDto.email());
     }
@@ -44,7 +44,7 @@ class UserRegistrationTest {
     @DisplayName("사용자가 이미 존재하는 Email로 회원가입을 요청하였을 경우 DuplicatedEmailException을 발생시킨다")
     void failToRegistrationDuplicatedEmail() {
         // Given
-        String email = "rudals1888@gmail.com";
+        final String email = "rudals1888@gmail.com";
 
         // When
         userRepository.save(
@@ -55,7 +55,7 @@ class UserRegistrationTest {
                 .build());
 
         // Then
-        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+        final RegistrationRequestDto requestDto = new RegistrationRequestDto(
             "kimkim2", email, "fefefass1Z!z");
         assertThrows(DuplicatedEmailException.class, () -> userService.createUser(requestDto));
     }
@@ -65,7 +65,7 @@ class UserRegistrationTest {
     @DisplayName("사용자가 이미 존재하는 Nickname으로 회원가입을 요청하였을 경우 DuplicatedNicknameException을 발생시킨다")
     void failToRegistrationDuplicatedNickname() {
         // Given
-        String nickname = "kimkim";
+        final String nickname = "kimkim";
 
         // When
         userRepository.save(
@@ -76,7 +76,7 @@ class UserRegistrationTest {
                 .build());
 
         // Then
-        RegistrationRequestDto requestDto = new RegistrationRequestDto(
+        final RegistrationRequestDto requestDto = new RegistrationRequestDto(
             nickname, "rudals1999@gmail.com", "fefefass1Z!z");
         assertThrows(DuplicatedNicknameException.class, () -> userService.createUser(requestDto));
     }

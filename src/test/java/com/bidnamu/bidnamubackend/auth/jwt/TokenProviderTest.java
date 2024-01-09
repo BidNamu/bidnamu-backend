@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenProviderTest {
 
 
-  private TokenProvider tokenProvider;
-  private JwtProperties jwtProperties;
+  private final TokenProvider tokenProvider;
+  private final JwtProperties jwtProperties;
 
   @Autowired
   public TokenProviderTest(JwtProperties jwtProperties) {
@@ -35,7 +35,7 @@ class TokenProviderTest {
   @Transactional
   @DisplayName("리프레쉬 토큰을 생성한다.")
   void generateRefreshTokenTest() {
-    String token = tokenProvider.generateRefreshToken();
+    final String token = tokenProvider.generateRefreshToken();
     assertNotNull(token);
   }
 

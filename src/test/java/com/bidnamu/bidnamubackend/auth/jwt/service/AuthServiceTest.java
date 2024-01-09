@@ -4,7 +4,7 @@ import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.auth.service.AuthService;
 import com.bidnamu.bidnamubackend.user.domain.User;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +32,7 @@ class AuthServiceTest {
 
   @BeforeEach
   void setting() {
-    var user = new RegistrationRequestDto(nickname,email,password);
+    final var user = new RegistrationRequestDto(nickname,email,password);
     userService.createUser(user);
 
   }
@@ -42,10 +42,10 @@ class AuthServiceTest {
   @DisplayName("유저가 로그인할 때 액세스토큰과 리프레쉬토큰을 지급받는다.")
   void login() {
 
-    LoginRequestDto loginRequestDto = new LoginRequestDto(email,password);
-    User user = userRepository.findByEmail(email).orElseThrow();
+    final LoginRequestDto loginRequestDto = new LoginRequestDto(email,password);
+    final User user = userRepository.findByEmail(email).orElseThrow();
 
-    LoginResponseDto loginResponseDto = authService.processLogin(loginRequestDto);
+    final LoginResponseDto loginResponseDto = authService.processLogin(loginRequestDto);
     Assertions.assertNotNull(loginResponseDto.accessToken());
     Assertions.assertNotNull(user.getRefreshToken());
 
@@ -55,9 +55,9 @@ class AuthServiceTest {
   @Transactional
   @DisplayName("액세스 토큰을 갱신한다.")
   void RefreshToken() {
-    LoginRequestDto loginRequestDto = new LoginRequestDto(email,password);
+    final LoginRequestDto loginRequestDto = new LoginRequestDto(email,password);
 
-    LoginResponseDto responseDto = authService.processLogin(loginRequestDto);
+    final LoginResponseDto responseDto = authService.processLogin(loginRequestDto);
 
     Assertions.assertNotNull(authService.refreshToken(responseDto.refreshToken()));
 

@@ -39,7 +39,7 @@ public class User extends BaseTimeEntity {
     private String refreshToken;
 
     @Builder
-    public User(String email, String password, String nickname) {
+    public User(final String email, final String password, final String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -50,16 +50,16 @@ public class User extends BaseTimeEntity {
         CascadeType.REMOVE})
     private final Set<Authority> authorities = new HashSet<>();
 
-    public void addAuthority(Role role) {
+    public void addAuthority(final Role role) {
         if (!this.authorities.isEmpty() && (authorities.stream()
             .anyMatch(authority -> authority.getRole().equals(role)))) {
             throw new IllegalArgumentException("해당 유저는 이미 해당 권한을 가지고 있습니다.");
         }
-        Authority authority = Authority.builder().role(role).user(this).build();
+        final Authority authority = Authority.builder().role(role).user(this).build();
         this.authorities.add(authority);
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public void updateRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
 

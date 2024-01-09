@@ -25,13 +25,13 @@ class DataSourceConfigTest {
         @Qualifier("masterDataSource") final DataSource masterDataSource) {
 
         // Given
-        String driverClassName = environment.getProperty("spring.datasource.master.hikari.driver-class-name");
-        String jdbcUrl = environment.getProperty("spring.datasource.master.hikari.jdbc-url");
-        Boolean readOnly = Boolean.valueOf(environment.getProperty("spring.datasource.master.hikari.read-only"));
-        String username = environment.getProperty("spring.datasource.master.hikari.username");
+        final String driverClassName = environment.getProperty("spring.datasource.master.hikari.driver-class-name");
+        final String jdbcUrl = environment.getProperty("spring.datasource.master.hikari.jdbc-url");
+        final Boolean readOnly = Boolean.valueOf(environment.getProperty("spring.datasource.master.hikari.read-only"));
+        final String username = environment.getProperty("spring.datasource.master.hikari.username");
 
         // When
-        try (HikariDataSource hikariDataSource = (HikariDataSource) masterDataSource) {
+        try (final HikariDataSource hikariDataSource = (HikariDataSource) masterDataSource) {
 
             // Then
             log.info("hikariDataSource : [{}]", hikariDataSource);
@@ -48,10 +48,10 @@ class DataSourceConfigTest {
         @Qualifier("slaveDataSource") final DataSource slaveDataSource) {
 
         // Given
-        String driverClassName = environment.getProperty("spring.datasource.slave.hikari.driver-class-name");
-        String jdbcUrl = environment.getProperty("spring.datasource.slave.hikari.jdbc-url");
-        Boolean readOnly = Boolean.valueOf(environment.getProperty("spring.datasource.slave.hikari.read-only"));
-        String username = environment.getProperty("spring.datasource.slave.hikari.username");
+        final String driverClassName = environment.getProperty("spring.datasource.slave.hikari.driver-class-name");
+        final String jdbcUrl = environment.getProperty("spring.datasource.slave.hikari.jdbc-url");
+        final Boolean readOnly = Boolean.valueOf(environment.getProperty("spring.datasource.slave.hikari.read-only"));
+        final String username = environment.getProperty("spring.datasource.slave.hikari.username");
 
         // When
         try (HikariDataSource hikariDataSource = (HikariDataSource) slaveDataSource) {
