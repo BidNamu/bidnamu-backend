@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.config;
+package com.bidnamu.bidnamubackend.credit.config;
 
 import com.siot.IamportRestClient.IamportClient;
 import org.springframework.beans.factory.annotation.Value;

@@ -38,6 +38,9 @@ public class User extends BaseTimeEntity {
     @Column
     private String refreshToken;
 
+    @Column(nullable = false)
+    private int credit = 0;
+
     @Builder
     public User(final String email, final String password, final String nickname) {
         this.email = email;
@@ -63,11 +66,15 @@ public class User extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void addCredit(final int credit) {
+        this.credit += credit;
+    }
+
     public void updateStatus(final UserStatusUpdateRequestDto dto) {
-        if(dto.enabled() != null){
+        if (dto.enabled() != null) {
             this.enabled = dto.enabled();
         }
-        if(dto.expired() != null){
+        if (dto.expired() != null) {
             this.expired = dto.expired();
         }
     }
