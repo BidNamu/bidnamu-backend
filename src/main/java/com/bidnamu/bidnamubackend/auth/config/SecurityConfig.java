@@ -19,7 +19,7 @@ public class SecurityConfig {
 
     private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final AccessDeniedHandlerImpl accessDeniedHandlerImpl;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -34,7 +34,7 @@ public class SecurityConfig {
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(e -> {
-                    e.accessDeniedHandler(jwtAccessDeniedHandler);
+                    e.accessDeniedHandler(accessDeniedHandlerImpl);
                     e.authenticationEntryPoint(jwtAuthenticationEntryPoint);
                 }
             )
