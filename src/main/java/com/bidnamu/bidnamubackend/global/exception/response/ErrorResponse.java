@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 @Builder
 public record ErrorResponse(ErrorCode code, String message, String explain) {
 
+    public static ErrorResponse from(final ErrorCode code, final String explain) {
+        return new ErrorResponse(code, code.getMessage(), explain);
+    }
+
     public ResponseEntity<ErrorResponse> toResponseEntity() {
         return ResponseEntity.status(code.getHttpStatus()).body(this);
     }
