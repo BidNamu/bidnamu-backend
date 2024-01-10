@@ -65,6 +65,9 @@ public class Auction extends BaseTimeEntity {
     @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<AuctionImage> auctionImages = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean fixedPrice = false;
+
     @Builder
     public Auction(
         final String title,
@@ -72,7 +75,8 @@ public class Auction extends BaseTimeEntity {
         final User seller,
         final Category category,
         final int startingBid,
-        final LocalDateTime closingTime
+        final LocalDateTime closingTime,
+        final boolean fixedPrice
     ) {
         this.title = title;
         this.description = description;
@@ -81,6 +85,7 @@ public class Auction extends BaseTimeEntity {
         this.startingBid = startingBid;
         this.closingTime = Objects.requireNonNullElseGet(closingTime,
             () -> LocalDateTime.now().plusWeeks(1L));
+        this.fixedPrice = fixedPrice;
     }
 
     public void updateCurrentBid(final int currentBid) {

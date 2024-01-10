@@ -41,7 +41,7 @@ public class SecurityConfig {
         .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(registry -> registry
             .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
-            .requestMatchers("/", "/**").permitAll())
+            .requestMatchers("/", "/**").permitAll()
         )
         .getOrBuild();
 
