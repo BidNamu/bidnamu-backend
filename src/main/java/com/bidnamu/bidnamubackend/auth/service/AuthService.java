@@ -91,7 +91,7 @@ public class AuthService {
 
         refreshTokenRedisRepository.deleteById(userEmail);
 
-        return new LogoutResponseDto();
+        return new LogoutResponseDto(accessToken, tokenProvider.getExpiration(accessToken));
     }
 
     private Authentication createAuthentication(final LoginRequestDto loginRequestDto) {
