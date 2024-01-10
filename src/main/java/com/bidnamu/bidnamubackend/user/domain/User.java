@@ -34,9 +34,6 @@ public class User extends BaseTimeEntity {
   @Column(nullable = false)
   private boolean expired = false;
 
-  @Column
-  private String refreshToken;
-
   @Builder
   public User(String email, String password, String nickname) {
     this.email = email;
@@ -58,7 +55,4 @@ public class User extends BaseTimeEntity {
     this.authorities.add(authority);
   }
 
-  public void updateRefreshToken(String refreshToken) {
-    this.refreshToken = refreshToken;
-  }
 }
