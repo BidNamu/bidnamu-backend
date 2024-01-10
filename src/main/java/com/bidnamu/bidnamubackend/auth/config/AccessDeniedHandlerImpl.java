@@ -1,6 +1,5 @@
 package com.bidnamu.bidnamubackend.auth.config;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,7 +12,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
   @Override
   public void handle(final HttpServletRequest request,final HttpServletResponse response,
-      final AccessDeniedException accessDeniedException) throws IOException, ServletException {
+      final AccessDeniedException accessDeniedException) throws IOException {
     response.sendError(HttpServletResponse.SC_FORBIDDEN);
   }
 }
