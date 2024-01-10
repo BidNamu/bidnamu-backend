@@ -10,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
@@ -19,7 +20,7 @@ public class SecurityConfig {
 
     private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final AccessDeniedHandlerImpl accessDeniedHandlerImpl;
+    private final AccessDeniedHandler accessDeniedHandler;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -34,7 +35,7 @@ public class SecurityConfig {
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(e -> {
-                    e.accessDeniedHandler(accessDeniedHandlerImpl);
+                    e.accessDeniedHandler(accessDeniedHandler);
                     e.authenticationEntryPoint(jwtAuthenticationEntryPoint);
                 }
             )
