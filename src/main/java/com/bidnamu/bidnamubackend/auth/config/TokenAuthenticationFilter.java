@@ -6,39 +6,47 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-  private final TokenProvider tokenProvider;
-  private static final String HEADER_AUTHORIZATION = "Authorization";
-  private static final String TOKEN_PREFIX = "Bearer ";
+    private final TokenProvider tokenProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
-  @Override
-  protected void doFilterInternal(final HttpServletRequest request,
-      final HttpServletResponse response,
-      final FilterChain filterChain) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(final HttpServletRequest request,
+        final HttpServletResponse response,
+        final FilterChain filterChain) throws ServletException, IOException {
 
-    final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-    final String token = getAccessToken(authorizationHeader);
+        final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+        final String token = getAccessToken(authorizationHeader);
 
-    if (StringUtils.hasText(token) && tokenProvider.validToken(token)) {
-      Authentication authentication = tokenProvider.getAuthentication(token);
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (StringUtils.hasText(token) && tokenProvider.validToken(token)) {
+
+            final String isLogout = (String) redisTemplate.opsForValue().get(token);
+
+            if (ObjectUtils.isEmpty(isLogout)) {
+                final Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+        filterChain.doFilter(request, response);
     }
-    filterChain.doFilter(request, response);
-  }
 
-  private String getAccessToken(final String authorizationHeader) {
-    if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
-      return authorizationHeader.substring(TOKEN_PREFIX.length());
+    private String getAccessToken(final String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
+            return authorizationHeader.substring(TOKEN_PREFIX.length());
+        }
+        return null;
     }
-    return null;
-  }
 }
