@@ -1,5 +1,6 @@
 package com.bidnamu.bidnamubackend.auth.service;
 
+import com.bidnamu.bidnamubackend.auth.config.JwtProperties;
 import com.bidnamu.bidnamubackend.auth.config.TokenProvider;
 import com.bidnamu.bidnamubackend.auth.domain.RefreshToken;
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
@@ -30,6 +31,8 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final RedisSessionConfig redisSessionConfig;
+    private final JwtProperties jwtProperties;
+
 
     @Transactional
     public LoginResponseDto processLogin(final LoginRequestDto requestDto) {
@@ -39,7 +42,7 @@ public class AuthService {
         final String refreshToken = tokenProvider.generateRefreshToken();
 
         refreshTokenRedisRepository.save(
-            RefreshToken.builder().username(authentication.getName()).token(refreshToken).build());
+            RefreshToken.builder().username(authentication.getName()).token(refreshToken).expiration(jwtProperties.getRefreshTokenExpiration() / 1000).build());
 
         return new LoginResponseDto(accessToken, refreshToken);
     }
@@ -67,7 +70,7 @@ public class AuthService {
 
         refreshTokenRedisRepository.deleteById(user.getEmail());
         refreshTokenRedisRepository.save(
-            RefreshToken.builder().username(authentication.getName()).token(generatedRefreshToken)
+            RefreshToken.builder().username(authentication.getName()).token(generatedRefreshToken).expiration(jwtProperties.getRefreshTokenExpiration() / 1000)
                 .build());
 
         return new LoginResponseDto(accessToken, generatedRefreshToken);
