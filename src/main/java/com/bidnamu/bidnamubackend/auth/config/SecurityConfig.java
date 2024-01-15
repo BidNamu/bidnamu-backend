@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/users/{email}/status").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
                 .requestMatchers(HttpMethod.PATCH, "/users/status/expired").hasRole("USER")
-                .requestMatchers("/", "/**").permitAll()
+                .requestMatchers("/", "/**", "/auths/**", "/users/**").permitAll()
             )
             .getOrBuild();
     }
