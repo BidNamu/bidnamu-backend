@@ -124,6 +124,6 @@ public class GlobalExceptionHandler {
 
     private ErrorResponse createErrorResponse(final CommonErrorCode errorCode,
         final String explain) {
-        return ErrorResponse.from(errorCode, explain);
+        return ErrorResponse.of(errorCode, explain);
     }
 }
