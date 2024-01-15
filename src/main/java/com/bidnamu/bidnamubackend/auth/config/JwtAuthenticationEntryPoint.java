@@ -21,7 +21,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(final HttpServletRequest request, final HttpServletResponse response,
         final AuthenticationException authException) throws IOException {
         final JwtErrorCode code = (JwtErrorCode) request.getAttribute(EXCEPTION_KEY);
-        log.info("JwtAuthenticationEntryPoint has been called : {}", code.name());
         setResponse(response, code);
     }
 
