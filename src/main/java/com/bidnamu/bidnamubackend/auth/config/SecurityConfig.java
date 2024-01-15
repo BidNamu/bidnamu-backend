@@ -5,23 +5,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
-@RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CorsFilter corsFilter;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final AccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final AccessDeniedHandlerImpl accessDeniedHandlerImpl;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -36,15 +36,15 @@ public class SecurityConfig {
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(e -> {
-                    e.accessDeniedHandler(accessDeniedHandler);
-                    e.authenticationEntryPoint(authenticationEntryPoint);
+                    e.accessDeniedHandler(accessDeniedHandlerImpl);
+                    e.authenticationEntryPoint(jwtAuthenticationEntryPoint);
                 }
             )
             .sessionManagement(e -> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(registry -> registry
                 .requestMatchers(HttpMethod.PATCH, "/users/{email}/status").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
-                .requestMatchers(HttpMethod.PATCH, "/users/status").hasRole("USER")
+                .requestMatchers(HttpMethod.PATCH, "/users/status/expired").hasRole("USER")
                 .requestMatchers("/", "/**").permitAll()
             )
             .getOrBuild();
