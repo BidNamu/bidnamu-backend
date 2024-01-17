@@ -45,6 +45,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.jayway.jsonpath:json-path-assert:2.4.0'
 
     // 테스트 환경용 롬복 설정
     testCompileOnly 'org.projectlombok:lombok'
