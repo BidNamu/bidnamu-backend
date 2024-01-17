@@ -4,7 +4,9 @@ import com.bidnamu.bidnamubackend.auction.domain.Auction;
 import com.bidnamu.bidnamubackend.auction.domain.AuctionImage;
 import com.bidnamu.bidnamubackend.auction.domain.Category;
 import com.bidnamu.bidnamubackend.auction.dto.CreateAuctionDto;
+import com.bidnamu.bidnamubackend.auction.dto.request.SearchAuctionRequestDto;
 import com.bidnamu.bidnamubackend.auction.dto.response.AuctionDetailResponseDto;
+import com.bidnamu.bidnamubackend.auction.dto.response.SearchAuctionResponseDto;
 import com.bidnamu.bidnamubackend.auction.repository.AuctionRepository;
 import com.bidnamu.bidnamubackend.file.domain.FileInfo;
 import com.bidnamu.bidnamubackend.file.service.FileService;
@@ -12,6 +14,8 @@ import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +40,13 @@ public class AuctionService {
         uploadedFileInfos.forEach(fileInfo -> auction.addAuctionImage(
             AuctionImage.builder().auction(auction).fileInfo(fileInfo).build()));
         return AuctionDetailResponseDto.from(auction);
+    }
+
+    @Transactional
+    public Page<SearchAuctionResponseDto> searchAuction(final SearchAuctionRequestDto requestDto,
+        final
+        Pageable pageable) {
+        return auctionRepository.findBySearchAuction(requestDto, pageable).map(
+            SearchAuctionResponseDto::from);
     }
 }
