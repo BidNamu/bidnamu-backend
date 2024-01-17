@@ -10,8 +10,9 @@ public record SearchAuctionResponseDto(
     String seller,
     String category,
     int startingBid,
-    LocalDateTime closingTime,
+    int currentBid,
     int bidderCount,
+    LocalDateTime closingTime,
     List<String> images
 ) {
 
@@ -22,8 +23,9 @@ public record SearchAuctionResponseDto(
             auction.getSeller().getEmail(),
             auction.getCategory().getName(),
             auction.getStartingBid(),
-            auction.getClosingTime(),
+            auction.getCurrentBid(),
             auction.getBidderCount(),
+            auction.getClosingTime(),
             auction.getImageOriginalFileNames()
         );
     }
