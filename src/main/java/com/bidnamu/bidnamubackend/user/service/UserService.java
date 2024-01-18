@@ -42,11 +42,6 @@ public class UserService {
             .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
     }
 
-    public User findByRefreshToken(final String refreshToken) {
-        return userRepository.findByRefreshToken(refreshToken)
-            .orElseThrow(() -> new UnknownUserException("존재하지 않는 유저입니다"));
-    }
-
     public boolean isDuplicatedEmail(final String email) {
         return userRepository.existsUserByEmail(email);
     }

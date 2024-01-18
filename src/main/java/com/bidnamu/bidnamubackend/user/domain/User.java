@@ -34,10 +34,7 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean expired = false;
-
-    @Column
-    private String refreshToken;
-
+  
     @Column(nullable = false)
     private int credit = 0;
 
@@ -60,10 +57,6 @@ public class User extends BaseTimeEntity {
         }
         final Authority authority = Authority.builder().role(role).user(this).build();
         this.authorities.add(authority);
-    }
-
-    public void updateRefreshToken(final String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public void addCredit(final int credit) {

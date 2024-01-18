@@ -25,11 +25,6 @@ public class SecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
             .addFilterBefore(corsFilter, CorsFilter.class)
@@ -45,8 +40,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/users/{email}/status").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/auctions").hasRole("SELLER")
                 .requestMatchers(HttpMethod.PATCH, "/users/status/expired").hasRole("USER")
+                .requestMatchers(HttpMethod.DELETE, "/auths/logout").authenticated()
                 .requestMatchers("/", "/**", "/auths/**", "/users/**").permitAll()
             )
             .getOrBuild();
+    }
+  
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

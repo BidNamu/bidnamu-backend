@@ -11,19 +11,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
-@Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String EXCEPTION_KEY = "exception";
@@ -36,10 +37,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         final String token = getAccessToken(authorizationHeader);
 
-        if (validToken(request, token)) {
-            log.info("Token validation : true");
-            final Authentication authentication = tokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (StringUtils.hasText(token) && validToken(token)) {
+
+            final String isLogout = (String) redisTemplate.opsForValue().get(token);
+
+            if (ObjectUtils.isEmpty(isLogout)) {
+                final Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }
@@ -65,7 +70,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             request.setAttribute(EXCEPTION_KEY, JwtErrorCode.UNKNOWN_ERROR);
         }
 
-        log.info("Token validation : false");
         return false;
     }
 

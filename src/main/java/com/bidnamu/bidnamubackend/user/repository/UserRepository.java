@@ -8,8 +8,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   Optional<User> findByEmail(final String email);
 
-  Optional<User> findByRefreshToken(final String refreshToken);
-
   boolean existsUserByEmail(final String email);
 
   boolean existsUserByNickname(final String nickname);
