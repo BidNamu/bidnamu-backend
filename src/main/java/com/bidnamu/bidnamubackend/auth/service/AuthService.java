@@ -8,11 +8,11 @@ import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LogoutResponseDto;
 import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
 import com.bidnamu.bidnamubackend.auth.repository.RefreshTokenRedisRepository;
-import com.bidnamu.bidnamubackend.global.config.RedisSessionConfig;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
 public class AuthService {
 
@@ -30,9 +29,20 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
-    private final RedisSessionConfig redisSessionConfig;
     private final JwtProperties jwtProperties;
+    private final RedisTemplate<String, Object> redisTemplate;
 
+    public AuthService(TokenProvider tokenProvider,
+        AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService,
+        RefreshTokenRedisRepository refreshTokenRedisRepository, JwtProperties jwtProperties,
+        @Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.tokenProvider = tokenProvider;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.userService = userService;
+        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
+        this.jwtProperties = jwtProperties;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Transactional
     public LoginResponseDto processLogin(final LoginRequestDto requestDto) {
@@ -42,7 +52,8 @@ public class AuthService {
         final String refreshToken = tokenProvider.generateRefreshToken();
 
         refreshTokenRedisRepository.save(
-            RefreshToken.builder().username(authentication.getName()).token(refreshToken).expiration(jwtProperties.getRefreshTokenExpiration() / 1000).build());
+            RefreshToken.builder().username(authentication.getName()).token(refreshToken)
+                .expiration(jwtProperties.getRefreshTokenExpiration() / 1000).build());
 
         return new LoginResponseDto(accessToken, refreshToken);
     }
@@ -70,28 +81,27 @@ public class AuthService {
 
         refreshTokenRedisRepository.deleteById(user.getEmail());
         refreshTokenRedisRepository.save(
-            RefreshToken.builder().username(authentication.getName()).token(generatedRefreshToken).expiration(jwtProperties.getRefreshTokenExpiration() / 1000)
+            RefreshToken.builder().username(authentication.getName()).token(generatedRefreshToken)
+                .expiration(jwtProperties.getRefreshTokenExpiration() / 1000)
                 .build());
 
         return new LoginResponseDto(accessToken, generatedRefreshToken);
     }
 
     public LogoutResponseDto processLogout(final String accessToken) {
-        if (!tokenProvider.validToken(accessToken)) {
-            //예외처리
+        tokenProvider.validToken(accessToken);
 
-        }
         final Authentication authentication = tokenProvider.getAuthentication(accessToken);
+
         final String userEmail = authentication.getName();
 
-        if (redisSessionConfig.redisTemplate().opsForValue().get(userEmail)
+        if (redisTemplate.opsForValue().get(userEmail)
             != null) {
-            redisSessionConfig.redisTemplate().delete(userEmail);
+            redisTemplate.delete(userEmail);
         }
-        Long expiration = tokenProvider.getExpiration(accessToken);
-        redisSessionConfig.redisTemplate().opsForValue().set(accessToken, "logout", expiration,
+        final Long expiration = tokenProvider.getExpiration(accessToken);
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration,
             TimeUnit.MILLISECONDS);
-
         refreshTokenRedisRepository.deleteById(userEmail);
 
         return new LogoutResponseDto(accessToken, tokenProvider.getExpiration(accessToken));

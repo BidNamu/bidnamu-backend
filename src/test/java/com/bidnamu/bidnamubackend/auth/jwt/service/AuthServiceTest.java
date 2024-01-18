@@ -56,7 +56,7 @@ class AuthServiceTest {
     @Transactional
     @DisplayName("유저가 로그인할 때 액세스토큰과 리프레쉬토큰을 지급받는다.")
     void login() throws Exception {
-        String requestBody = "{\"email\":\"test1234@gmail.com\",\"password\":\"1234123zXcC!\"}";
+        final String requestBody = "{\"email\":\"test1234@gmail.com\",\"password\":\"1234123zXcC!\"}";
         mockMvc.perform(post("/auths/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
@@ -71,9 +71,9 @@ class AuthServiceTest {
     @Transactional
     @DisplayName("액세스 토큰을 갱신한다.")
     void reIssue() throws Exception {
-        LoginResponseDto responseDto = authService.processLogin(
+        final LoginResponseDto responseDto = authService.processLogin(
             new LoginRequestDto(email, password));
-        String requestBody =
+        final String requestBody =
             "{\"refreshToken\":\"" + responseDto.refreshToken() + "\"}";
 
         mockMvc.perform(
@@ -90,12 +90,12 @@ class AuthServiceTest {
     @Transactional
     @DisplayName("로그아웃 할 때 액세스토큰이 블랙리스트에 등록된다.")
     void logout() throws Exception {
-        LoginResponseDto responseDto = authService.processLogin(
+        final LoginResponseDto responseDto = authService.processLogin(
             new LoginRequestDto(email, password));
-        String requestBody = "{\"accessToken\":\"" + responseDto.accessToken() + "\"}";
+        final String requestBody = "{\"accessToken\":\"" + responseDto.accessToken() + "\"}";
 
         mockMvc.perform(
-            delete("/auths/logout").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                delete("/auths/logout").contentType(MediaType.APPLICATION_JSON).content(requestBody))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.accessToken").exists())
