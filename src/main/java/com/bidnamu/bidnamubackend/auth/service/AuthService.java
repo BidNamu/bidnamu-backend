@@ -11,7 +11,7 @@ import com.bidnamu.bidnamubackend.auth.repository.RefreshTokenRedisRepository;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final TokenProvider tokenProvider;
@@ -32,17 +33,6 @@ public class AuthService {
     private final JwtProperties jwtProperties;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public AuthService(TokenProvider tokenProvider,
-        AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService,
-        RefreshTokenRedisRepository refreshTokenRedisRepository, JwtProperties jwtProperties,
-        @Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
-        this.tokenProvider = tokenProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.userService = userService;
-        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
-        this.jwtProperties = jwtProperties;
-        this.redisTemplate = redisTemplate;
-    }
 
     @Transactional
     public LoginResponseDto processLogin(final LoginRequestDto requestDto) {
