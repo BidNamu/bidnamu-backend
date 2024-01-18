@@ -1,7 +1,6 @@
 package com.bidnamu.bidnamubackend.auth.controller;
 
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
-import com.bidnamu.bidnamubackend.auth.dto.request.LogoutRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.request.RefreshTokenRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LogoutResponseDto;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,9 +37,9 @@ public class AuthController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<LogoutResponseDto> logout(
-        @RequestBody final LogoutRequestDto requestDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.processLogout(
-            requestDto.accessToken()));
+        @RequestHeader(value = "Authorization") final String token) {
+        final String accessToken = token.substring(7);
+        return ResponseEntity.status(HttpStatus.OK).body(authService.processLogout(accessToken));
     }
 
 }
