@@ -26,7 +26,7 @@ public class RedisSessionConfig {
 
     @Bean({"redisConnectionFactory", "redisSessionConnectionFactory"})
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration
+        final RedisStandaloneConfiguration redisStandaloneConfiguration
             = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(hostName);
         redisStandaloneConfiguration.setPort(port);
@@ -35,7 +35,7 @@ public class RedisSessionConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());

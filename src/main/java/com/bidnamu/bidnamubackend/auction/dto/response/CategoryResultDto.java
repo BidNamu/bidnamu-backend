@@ -13,7 +13,7 @@ public record CategoryResultDto(
     List<CategoryResultDto> children
 ) {
 
-    public static CategoryResultDto from(Category category) {
+    public static CategoryResultDto from(final Category category) {
         return new CategoryResultDto(
             category.getId(),
             category.getName(),

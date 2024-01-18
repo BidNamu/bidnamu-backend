@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-  Optional<User> findByEmail(String email);
+  Optional<User> findByEmail(final String email);
 
-  boolean existsUserByEmail(String email);
+  boolean existsUserByEmail(final String email);
 
-  boolean existsUserByNickname(String nickname);
+  boolean existsUserByNickname(final String nickname);
 }

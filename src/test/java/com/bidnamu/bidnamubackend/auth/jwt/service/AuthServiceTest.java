@@ -11,7 +11,8 @@ import com.bidnamu.bidnamubackend.auth.controller.AuthController;
 import com.bidnamu.bidnamubackend.auth.dto.request.LoginRequestDto;
 import com.bidnamu.bidnamubackend.auth.dto.response.LoginResponseDto;
 import com.bidnamu.bidnamubackend.auth.service.AuthService;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.domain.User;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
 import com.bidnamu.bidnamubackend.user.repository.UserRepository;
 import com.bidnamu.bidnamubackend.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,5 +103,4 @@ class AuthServiceTest {
             .andExpect(jsonPath("$.expiration").exists());
 
     }
-
 }

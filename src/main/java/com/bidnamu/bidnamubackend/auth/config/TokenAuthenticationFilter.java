@@ -1,10 +1,15 @@
 package com.bidnamu.bidnamubackend.auth.config;
 
+import com.bidnamu.bidnamubackend.auth.exception.JwtErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,16 +27,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final RedisTemplate<String, Object> redisTemplate;
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String EXCEPTION_KEY = "exception";
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
-        final HttpServletResponse response,
-        final FilterChain filterChain) throws ServletException, IOException {
+        @NonNull final HttpServletResponse response,
+        @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         final String token = getAccessToken(authorizationHeader);
 
-        if (StringUtils.hasText(token) && tokenProvider.validToken(token)) {
+        if (StringUtils.hasText(token) && validToken(token)) {
 
             final String isLogout = (String) redisTemplate.opsForValue().get(token);
 
@@ -41,6 +47,30 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean validToken(final HttpServletRequest request, final String token) {
+        if (!StringUtils.hasText(token)) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_NOT_EXIST);
+            return false;
+        }
+
+        try {
+            tokenProvider.validToken(token);
+            return true;
+        } catch (MalformedJwtException e) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.MALFORMED_TOKEN);
+        } catch (ExpiredJwtException e) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.EXPIRED_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.UNSUPPORTED_TOKEN);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_NOT_EXIST);
+        } catch (Exception e) {
+            request.setAttribute(EXCEPTION_KEY, JwtErrorCode.UNKNOWN_ERROR);
+        }
+
+        return false;
     }
 
     private String getAccessToken(final String authorizationHeader) {

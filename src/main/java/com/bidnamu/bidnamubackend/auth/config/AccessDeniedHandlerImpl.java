@@ -1,6 +1,5 @@
 package com.bidnamu.bidnamubackend.auth.config;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -9,13 +8,11 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
   @Override
   public void handle(final HttpServletRequest request,final HttpServletResponse response,
-      AccessDeniedException accessDeniedException) throws IOException, ServletException {
-    //필요한 권한이 없어 접근하려 할 때 403
+      final AccessDeniedException accessDeniedException) throws IOException {
     response.sendError(HttpServletResponse.SC_FORBIDDEN);
-
   }
 }

@@ -2,8 +2,10 @@ package com.bidnamu.bidnamubackend.user.service;
 
 import com.bidnamu.bidnamubackend.auth.domain.Role;
 import com.bidnamu.bidnamubackend.user.domain.User;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationRequestDto;
-import com.bidnamu.bidnamubackend.user.dto.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.request.RegistrationRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
+import com.bidnamu.bidnamubackend.user.dto.response.RegistrationResponseDto;
+import com.bidnamu.bidnamubackend.user.dto.response.UserStatusUpdateResponseDto;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
 import com.bidnamu.bidnamubackend.user.exception.UnknownUserException;
@@ -46,5 +48,13 @@ public class UserService {
 
     public boolean isDuplicatedNickname(final String nickname) {
         return userRepository.existsUserByNickname(nickname);
+    }
+
+    @Transactional
+    public UserStatusUpdateResponseDto updateUserStatus(final String email,
+        final UserStatusUpdateRequestDto dto) {
+        final User user = findByEmail(email);
+        user.updateStatus(dto);
+        return UserStatusUpdateResponseDto.from(user);
     }
 }
