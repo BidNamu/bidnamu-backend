@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,10 +99,8 @@ public class AuthService {
     private Authentication createAuthentication(final LoginRequestDto loginRequestDto) {
         final Authentication authenticationToken = new UsernamePasswordAuthenticationToken(
             loginRequestDto.email(), loginRequestDto.password());
-        final var authentication = authenticationManagerBuilder.getObject()
+        return authenticationManagerBuilder.getObject()
             .authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
     }
 
 }
