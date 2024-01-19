@@ -34,18 +34,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         @NonNull final HttpServletResponse response,
         @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-        final String token = getAccessToken(authorizationHeader);
+        final String path = request.getRequestURI();
 
-        if (StringUtils.hasText(token) && validToken(request, token)) {
+        if (!path.startsWith("/api/auths/reissue")) {
+            final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+            final String token = getAccessToken(authorizationHeader);
 
-            final String isLogout = (String) redisTemplate.opsForValue().get(token);
+            if (StringUtils.hasText(token) && validToken(request, token)) {
 
-            if (ObjectUtils.isEmpty(isLogout)) {
-                final Authentication authentication = tokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                final String isLogout = (String) redisTemplate.opsForValue().get(token);
+
+                if (ObjectUtils.isEmpty(isLogout)) {
+                    final Authentication authentication = tokenProvider.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
+
         filterChain.doFilter(request, response);
     }
 
