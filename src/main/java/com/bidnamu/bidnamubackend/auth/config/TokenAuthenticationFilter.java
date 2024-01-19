@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,15 +40,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             final String token = getAccessToken(authorizationHeader);
 
             if (StringUtils.hasText(token) && validToken(request, token)) {
-
-                final String isLogout = (String) redisTemplate.opsForValue().get(token);
-
-                if (ObjectUtils.isEmpty(isLogout)) {
-                    final Authentication authentication = tokenProvider.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_BLACKLISTED);
-                }
+                final Authentication authentication = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
@@ -64,6 +56,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             tokenProvider.validToken(token);
+            if (redisTemplate.opsForValue().get(token) != null) {
+                request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_BLACKLISTED);
+                return false;
+            }
             return true;
         } catch (MalformedJwtException e) {
             request.setAttribute(EXCEPTION_KEY, JwtErrorCode.MALFORMED_TOKEN);
