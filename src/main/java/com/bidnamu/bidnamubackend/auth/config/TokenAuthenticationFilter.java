@@ -37,7 +37,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
         final String token = getAccessToken(authorizationHeader);
 
-        if (StringUtils.hasText(token) && validToken(token)) {
+        if (StringUtils.hasText(token) && validToken(request, token)) {
 
             final String isLogout = (String) redisTemplate.opsForValue().get(token);
 
