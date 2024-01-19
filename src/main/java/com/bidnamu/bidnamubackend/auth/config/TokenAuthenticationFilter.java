@@ -47,6 +47,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 if (ObjectUtils.isEmpty(isLogout)) {
                     final Authentication authentication = tokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_BLACKLISTED);
                 }
             }
         }

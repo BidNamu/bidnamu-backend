@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum JwtErrorCode {
+    TOKEN_BLACKLISTED(UNAUTHORIZED, "이미 로그아웃 처리 된 토큰입니다."),
     MALFORMED_TOKEN(UNAUTHORIZED, "잘못된 토큰 양식입니다."),
     EXPIRED_TOKEN(UNAUTHORIZED, "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(UNAUTHORIZED, "지원하지 않는 토큰 방식입니다."),
