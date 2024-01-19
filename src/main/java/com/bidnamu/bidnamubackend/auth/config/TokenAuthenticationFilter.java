@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,18 +33,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         @NonNull final HttpServletResponse response,
         @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-        final String token = getAccessToken(authorizationHeader);
+        final String path = request.getRequestURI();
 
-        if (StringUtils.hasText(token) && validToken(token)) {
+        if (!path.startsWith("/api/auths/reissue")) {
+            final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+            final String token = getAccessToken(authorizationHeader);
 
-            final String isLogout = (String) redisTemplate.opsForValue().get(token);
-
-            if (ObjectUtils.isEmpty(isLogout)) {
+            if (StringUtils.hasText(token) && validToken(request, token)) {
                 final Authentication authentication = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 
@@ -57,6 +56,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             tokenProvider.validToken(token);
+            if (redisTemplate.opsForValue().get(token) != null) {
+                request.setAttribute(EXCEPTION_KEY, JwtErrorCode.TOKEN_BLACKLISTED);
+                return false;
+            }
             return true;
         } catch (MalformedJwtException e) {
             request.setAttribute(EXCEPTION_KEY, JwtErrorCode.MALFORMED_TOKEN);

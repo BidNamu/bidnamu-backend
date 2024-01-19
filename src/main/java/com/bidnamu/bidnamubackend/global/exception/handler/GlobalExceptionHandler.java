@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         final UnknownTokenException e
     ) {
         final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(SignatureException.class)
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponse> handleExpiredJwtException(final ExpiredJwtException e) {
         final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(UnsupportedJwtException.class)
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(final JwtException e) {
         final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

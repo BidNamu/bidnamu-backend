@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenProvider {
 
-    private static final String AUTHORITIES_KEY = "authorities";
+    private static final String AUTHORITIES_KEY = "Authorization";
     private final JwtProperties jwtProperties;
     private final Key key;
 

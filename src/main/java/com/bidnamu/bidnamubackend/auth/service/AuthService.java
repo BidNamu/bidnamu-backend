@@ -50,8 +50,10 @@ public class AuthService {
     @Transactional
     public LoginResponseDto refreshToken(final String refreshToken) {
 
-        if (!tokenProvider.validToken(refreshToken)) {
-            throw new UnknownTokenException("잘못되거나 만료된 토큰입니다.");
+        tokenProvider.validToken(refreshToken);
+
+        if (!refreshTokenRedisRepository.existsByToken(refreshToken)) {
+            throw new UnknownTokenException("만료된 토큰입니다.");
         }
 
         final var token = refreshTokenRedisRepository.findByToken(refreshToken);
