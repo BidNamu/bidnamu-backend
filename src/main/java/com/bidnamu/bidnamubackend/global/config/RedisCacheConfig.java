@@ -1,6 +1,9 @@
 package com.bidnamu.bidnamubackend.global.config;
 
 import java.time.Duration;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -26,6 +29,7 @@ public class RedisCacheConfig {
     private int port;
 
     private static final String CONNECTION_FACTORY = "redisCacheConnectionFactory";
+    private static final String REDISSON_HOST_PREFIX = "redis://";
 
     @Bean(name = CONNECTION_FACTORY)
     public RedisConnectionFactory redisConnectionFactory() {
@@ -59,5 +63,12 @@ public class RedisCacheConfig {
             .fromConnectionFactory(redisConnectionFactory)
             .cacheDefaults(redisCacheConfiguration)
             .build();
+    }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        final Config config = new Config();
+        config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + hostName + ":" + port);
+        return Redisson.create(config);
     }
 }
