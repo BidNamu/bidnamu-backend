@@ -30,7 +30,7 @@ public class AuctionController {
 
     private final AuctionService auctionService;
 
-    @GetMapping("/category/searched")
+    @GetMapping("/search")
     public ResponseEntity<Page<SearchAuctionResponseDto>> searchCategoryAuction(
         @RequestBody final SearchAuctionRequestDto requestDto, final
     Pageable pageable) {
