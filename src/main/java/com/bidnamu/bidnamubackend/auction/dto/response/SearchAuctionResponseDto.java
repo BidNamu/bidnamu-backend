@@ -20,8 +20,8 @@ public record SearchAuctionResponseDto(
         return new SearchAuctionResponseDto(
             auction.getTitle(),
             auction.getDescription(),
-            auction.getSeller().getEmail(),
-            auction.getCategory().getName(),
+            auction.getSellerEmail(),
+            auction.getCategoryName(),
             auction.getStartingBid(),
             auction.getCurrentBid(),
             auction.getBidderCount(),

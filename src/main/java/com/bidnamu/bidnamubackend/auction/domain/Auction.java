@@ -107,7 +107,8 @@ public class Auction extends BaseTimeEntity {
     public void addAuctionImage(final AuctionImage auctionImage) {
         this.auctionImages.add(auctionImage);
     }
-    public void addBidder(final Bid bidder){
+
+    public void addBidder(final Bid bidder) {
         this.bidders.add(bidder);
     }
 
@@ -117,5 +118,9 @@ public class Auction extends BaseTimeEntity {
 
     public List<String> getImageOriginalFileNames() {
         return auctionImages.stream().map(AuctionImage::getOriginalFileName).toList();
+    }
+
+    public String getSellerEmail() {
+        return seller.getEmail();
     }
 }
