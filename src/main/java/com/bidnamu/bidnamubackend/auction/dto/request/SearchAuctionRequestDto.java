@@ -18,18 +18,8 @@ public record SearchAuctionRequestDto(
     @PastOrPresent
     LocalDateTime startTime,
     @PastOrPresent
-    LocalDateTime closeTime
+    LocalDateTime closeTime,
+    int pageNumber
 ) {
 
-    public static SearchAuctionRequestDto of(
-        final String name,
-        final String title,
-        final AuctionStatus auctionStatus,
-        final AuctionSortMethod sortMethod,
-        final LocalDateTime startTime,
-        final LocalDateTime closeTime
-    ) {
-        return new SearchAuctionRequestDto(name, title, 0, 0, auctionStatus, sortMethod, startTime,
-            closeTime);
-    }
 }
