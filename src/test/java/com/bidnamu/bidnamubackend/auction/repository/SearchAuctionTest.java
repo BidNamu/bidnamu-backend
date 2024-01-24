@@ -88,9 +88,9 @@ class SearchAuctionTest {
     @DisplayName("현재 입찰 금액 범위에 해당하는 경매 검색 시 성공적으로 정보를 반환해야한다.")
     void testSearchAuction_currentBid_range() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
-            6000, 10000, null, null, null, null);
+            6000, 10000, null, null, null, null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -104,9 +104,9 @@ class SearchAuctionTest {
     @DisplayName("경매 상태에 해당하는 경매 검색을 성공적으로 정보를 반환해야한다.")
     void testSearchAuction_status() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
-            0, 0, SUCCESS, null, null, null);
+            0, 0, SUCCESS, null, null, null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -120,9 +120,9 @@ class SearchAuctionTest {
     @DisplayName("마감일 기준으로 정렬된 경매 검색 성공적으로 정보를 반환해야한다.")
     void testSearchAuction_sort_closingTime() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
-            0, 0, null, CLOSING_TIME_DESC, null, null);
+            0, 0, null, CLOSING_TIME_DESC, null, null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -140,9 +140,9 @@ class SearchAuctionTest {
     @DisplayName("마감일 범위에 해당하는 경매 검색 시 성공적으로 정보를 반환해야 한다.")
     void testSearchAuction_closingTime_range() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
-            0, 0, null, null, LocalDateTime.now().minusDays(3), LocalDateTime.now());
+            0, 0, null, null, LocalDateTime.now().minusDays(3), LocalDateTime.now(), 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -156,9 +156,9 @@ class SearchAuctionTest {
     @DisplayName("경매 제목에 해당하는 경매를 성공적으로 정보를 반환해야 한다.")
     void testSearchAuction_title() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "Kimmin2",
-            0, 0, null, null, null, null);
+            0, 0, null, null, null, null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -172,9 +172,9 @@ class SearchAuctionTest {
     @DisplayName("카테고리명에 해당하는 경매 검색 시 성공적으로 정보를 반환해야 한다.")
     void testSearchAuction_categoryName() {
         //given
-        final Pageable pageable = PageRequest.of(0, 10);
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("김민1", "",
-            0, 0, null, null, null, null);
+            0, 0, null, null, null, null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto,
@@ -188,20 +188,17 @@ class SearchAuctionTest {
     @DisplayName("페이징 및 페이지 크기 검증 시 성공적으로 정보를 반환해야 한다.")
     void testPaginationAndPageSize() {
         //given
-        final int pageSize = 5;
-        final int pageNumber = 1;
-        final Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
             0, 0, null, CLOSING_TIME_DESC, null,
-            null);
+            null, 0);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto, pageable);
 
         //then
-        assertEquals(pageSize, result.getSize());
-        assertEquals(pageNumber, result.getNumber());
+        assertEquals(pageable.getPageSize(), result.getSize());
+        assertEquals(pageable.getPageNumber(), result.getNumber());
         assertEquals(2, result.getTotalPages());
     }
 }
