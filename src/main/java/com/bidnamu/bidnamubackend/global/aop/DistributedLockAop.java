@@ -3,7 +3,6 @@ package com.bidnamu.bidnamubackend.global.aop;
 import com.bidnamu.bidnamubackend.global.annotation.DistributedLock;
 import java.lang.reflect.Method;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class DistributedLockAop {
 
     private static final String REDISSON_LOCK_PREFIX = "LOCK:";
