@@ -18,8 +18,10 @@ import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.bid.repository.BidRepository;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,6 +82,7 @@ class BidServiceTest {
         when(bid.getId()).thenReturn(1L);
         when(bid.getOfferAmount()).thenReturn(bidAmount);
         when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+        when(bid.getBidder()).thenReturn(bidder);
 
         when(bidder.getCredit()).thenReturn(bidAmount);
 
@@ -108,6 +111,7 @@ class BidServiceTest {
         when(bid.getId()).thenReturn(1L);
         when(bid.getOfferAmount()).thenReturn(bidAmount);
         when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+        when(bid.getBidder()).thenReturn(bidder);
 
         when(bidder.getCredit()).thenReturn(bidAmount);
 
@@ -192,6 +196,7 @@ class BidServiceTest {
         when(bid.getId()).thenReturn(1L);
         when(bid.getOfferAmount()).thenReturn(bidAmount);
         when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+        when(bid.getBidder()).thenReturn(bidder);
 
         when(bidder.getCredit()).thenReturn(bidAmount);
 
@@ -199,5 +204,45 @@ class BidServiceTest {
 
         // Then
         assertTrue(auction.isAuctioned());
+    }
+
+    @Test
+    @DisplayName("입찰을 진행할 때 기존 입찰이 존재할 경우 기존 입찰자의 크레딧을 반환해야 한다")
+    void givenExistingBid_whenNewBidIsPlaced_thenPreviousBidderCreditsShouldBeRefunded()
+        throws NoSuchFieldException, IllegalAccessException {
+        // Given
+        final User oldBidder = User.builder().build();
+        final int oldBidderCredit = oldBidder.getCredit();
+        final int oldBidAmount = 5000;
+        final Bid oldBid = Bid.builder()
+            .offerAmount(oldBidAmount)
+            .auction(auction)
+            .bidder(oldBidder)
+            .build();
+
+        final User newBidder = User.builder().build();
+        final int bidAmount = 10000;
+        newBidder.addCredit(bidAmount);
+        final int newBidderPreviousCredit = newBidder.getCredit();
+        final Bid newBid = Bid.builder()
+            .bidder(newBidder)
+            .offerAmount(bidAmount)
+            .auction(auction)
+            .build();
+        Field field = Bid.class.getSuperclass().getSuperclass().getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(newBid, 1L);
+
+        // When
+        when(userService.findByEmail(any())).thenReturn(newBidder);
+        when(bidRepository.save(any())).thenReturn(newBid);
+        when(auctionRepository.findById(any())).thenReturn(Optional.ofNullable(auction));
+        when(bidRepository.findBidsByAuctionAndCurrentBidder(auction, true)).thenReturn(List.of(oldBid));
+
+        auctionService.processBidding(new ProcessBiddingDto("username", 1L, bidAmount));
+
+        // Then
+        assertEquals(oldBidderCredit + oldBidAmount, oldBidder.getCredit());
+        assertEquals(newBidderPreviousCredit - bidAmount, newBidder.getCredit());
     }
 }

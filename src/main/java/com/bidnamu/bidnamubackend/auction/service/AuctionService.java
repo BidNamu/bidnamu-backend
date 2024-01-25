@@ -89,11 +89,15 @@ public class AuctionService {
         auction.updateCurrentBid(bidAmount);
         if (!bidRepository.existsByBidderAndAuction(bidder, auction)) {
             auction.addBidderCount();
-            return bidRepository.save(new Bid(bidder, auction, bidAmount));
+            final Bid bid = bidRepository.save(
+                Bid.builder().bidder(bidder).auction(auction).offerAmount(bidAmount).build());
+            updateCurrentBidder(auction, bid);
+            return bid;
         }
 
         Bid existingBid = bidRepository.findByBidderAndAuction(bidder, auction);
         existingBid.updateOfferAmount(bidAmount);
+        updateCurrentBidder(auction, existingBid);
         return existingBid;
     }
 
@@ -108,5 +112,17 @@ public class AuctionService {
         auction.closeAuction();
         final Bid bid = createOrUpdateBid(bidder, auction, auction.getCurrentBid());
         return BidResponseDto.from(bid);
+    }
+
+    private void updateCurrentBidder(final Auction auction, final Bid newBid) {
+        bidRepository.findBidsByAuctionAndCurrentBidder(auction, true)
+            .forEach(old -> {
+                old.updateCurrentBidder(false);
+                final User oBidder = old.getBidder();
+                oBidder.addCredit(old.getOfferAmount());
+            });
+        newBid.updateCurrentBidder(true);
+        final User bidder = newBid.getBidder();
+        bidder.deductCredit(newBid.getOfferAmount());
     }
 }

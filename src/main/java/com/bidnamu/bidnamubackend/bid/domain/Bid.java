@@ -34,7 +34,14 @@ public class Bid extends BaseTimeEntity {
     @Column(nullable = false)
     private int offerAmount;
 
+    @Column(nullable = false)
+    private boolean currentBidder;
+
     public void updateOfferAmount(final int offerAmount) {
         this.offerAmount = offerAmount;
+    }
+
+    public void updateCurrentBidder(final boolean currentBidder) {
+        this.currentBidder = currentBidder;
     }
 }
