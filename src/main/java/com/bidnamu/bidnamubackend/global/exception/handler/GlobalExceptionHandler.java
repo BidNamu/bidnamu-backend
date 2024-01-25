@@ -1,6 +1,7 @@
 package com.bidnamu.bidnamubackend.global.exception.handler;
 
 import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
+import com.bidnamu.bidnamubackend.bid.exception.BidException;
 import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
@@ -120,6 +121,14 @@ public class GlobalExceptionHandler {
                 createErrorResponse(RESOURCE_NOT_FOUND, "해당하는 거래내역을 찾을 수 없습니다.").toResponseEntity();
             default -> createErrorResponse(INTERNAL_SERVER_ERROR, "서버 응답 오류").toResponseEntity();
         };
+    }
+
+    @ExceptionHandler(BidException.class)
+    public ResponseEntity<ErrorResponse> handleBidException(
+        final BidException e
+    ) {
+        final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     private ErrorResponse createErrorResponse(final CommonErrorCode errorCode,

@@ -101,4 +101,8 @@ public class Auction extends BaseTimeEntity {
     public List<String> getImageOriginalFileNames() {
         return auctionImages.stream().map(AuctionImage::getOriginalFileName).toList();
     }
+
+    public boolean isOnGoing() {
+        return LocalDateTime.now().isBefore(closingTime);
+    }
 }
