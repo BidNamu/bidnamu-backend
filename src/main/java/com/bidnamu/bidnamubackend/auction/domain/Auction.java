@@ -62,6 +62,9 @@ public class Auction extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean fixedPrice = false;
 
+    @Column(nullable = false)
+    private boolean auctioned = false;
+
     @Builder
     public Auction(
         final String title,

@@ -13,6 +13,7 @@ import com.bidnamu.bidnamubackend.auction.repository.AuctionRepository;
 import com.bidnamu.bidnamubackend.bid.domain.Bid;
 import com.bidnamu.bidnamubackend.bid.exception.AuctionClosedException;
 import com.bidnamu.bidnamubackend.bid.exception.BidTooLowException;
+import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.bid.repository.BidRepository;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
@@ -79,6 +80,8 @@ class BidServiceTest {
         when(bid.getOfferAmount()).thenReturn(bidAmount);
         when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
 
+        when(bidder.getCredit()).thenReturn(bidAmount);
+
         auctionService.processBidding(new ProcessBiddingDto("username", 1L, bidAmount));
 
         // Then
@@ -104,6 +107,8 @@ class BidServiceTest {
         when(bid.getId()).thenReturn(1L);
         when(bid.getOfferAmount()).thenReturn(bidAmount);
         when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+
+        when(bidder.getCredit()).thenReturn(bidAmount);
 
         auctionService.processBidding(new ProcessBiddingDto("username", 1L, bidAmount));
 
@@ -144,5 +149,23 @@ class BidServiceTest {
 
         // Then
         assertThrows(BidTooLowException.class, () -> auctionService.processBidding(dto));
+    }
+
+    @Test
+    @DisplayName("사용자가 보유하고 있는 크레딧보다 더 많은 입찰가로 입찰을 진행할 경우 예외를 던져야 한다")
+    void givenBidHigherThanUserCredits_whenBidIsPlaced_thenExceptionShouldBeThrown() {
+        // Given
+        final User bidder = mock();
+        final int bidAmount = 10000;
+        final ProcessBiddingDto dto = new ProcessBiddingDto("username", 1L, bidAmount);
+
+        // When
+        when(userService.findByEmail(any())).thenReturn(bidder);
+        when(auctionRepository.findById(any())).thenReturn(Optional.ofNullable(auction));
+
+        when(bidder.getCredit()).thenReturn(bidAmount - 1);
+
+        // Then
+        assertThrows(NotEnoughCreditException.class, () -> auctionService.processBidding(dto));
     }
 }

@@ -10,6 +10,7 @@ import com.bidnamu.bidnamubackend.auction.dto.response.BidResponseDto;
 import com.bidnamu.bidnamubackend.auction.repository.AuctionRepository;
 import com.bidnamu.bidnamubackend.bid.domain.Bid;
 import com.bidnamu.bidnamubackend.bid.exception.AuctionClosedException;
+import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.bid.repository.BidRepository;
 import com.bidnamu.bidnamubackend.bid.util.BidAmountValidator;
 import com.bidnamu.bidnamubackend.file.domain.FileInfo;
@@ -67,7 +68,7 @@ public class AuctionService {
     }
 
     private void validateAuctionIsOpen(final Auction auction) {
-        if (!auction.isOnGoing()) {
+        if (!auction.isOnGoing() || auction.isAuctioned()) {
             throw new AuctionClosedException();
         }
     }
@@ -77,6 +78,10 @@ public class AuctionService {
         final Auction auction,
         final int bidAmount
     ) {
+        if (bidder.getCredit() - bidAmount < 0) {
+            throw new NotEnoughCreditException();
+        }
+
         auction.updateCurrentBid(bidAmount);
         if (!bidRepository.existsByBidderAndAuction(bidder, auction)) {
             auction.addBidderCount();
