@@ -106,6 +106,10 @@ public class Auction extends BaseTimeEntity {
     }
 
     public boolean isOnGoing() {
-        return LocalDateTime.now().isBefore(closingTime);
+        return LocalDateTime.now().isBefore(closingTime) && (!auctioned);
+    }
+
+    public void closeAuction() {
+        this.auctioned = true;
     }
 }

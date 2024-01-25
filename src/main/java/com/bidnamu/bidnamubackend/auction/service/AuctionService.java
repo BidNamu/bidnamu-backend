@@ -55,6 +55,10 @@ public class AuctionService {
         final User bidder = userService.findByEmail(dto.username());
         final Auction auction = findAuctionById(dto.auctionId());
         validateAuctionIsOpen(auction);
+        if (auction.isFixedPrice()) {
+            return handleBidOfFixedPriceAuction(bidder, auction);
+        }
+
         BidAmountValidator.validBidAmount(auction.getCurrentBid(), dto.bidAmount());
 
         final Bid bid = createOrUpdateBid(bidder, auction, dto.bidAmount());
@@ -68,7 +72,7 @@ public class AuctionService {
     }
 
     private void validateAuctionIsOpen(final Auction auction) {
-        if (!auction.isOnGoing() || auction.isAuctioned()) {
+        if (!auction.isOnGoing()) {
             throw new AuctionClosedException();
         }
     }
@@ -78,7 +82,7 @@ public class AuctionService {
         final Auction auction,
         final int bidAmount
     ) {
-        if (bidder.getCredit() - bidAmount < 0) {
+        if (bidder.getCredit() < bidAmount) {
             throw new NotEnoughCreditException();
         }
 
@@ -91,5 +95,18 @@ public class AuctionService {
         Bid existingBid = bidRepository.findByBidderAndAuction(bidder, auction);
         existingBid.updateOfferAmount(bidAmount);
         return existingBid;
+    }
+
+    private BidResponseDto handleBidOfFixedPriceAuction(
+        final User bidder,
+        final Auction auction
+    ) {
+        if (bidder.getCredit() < auction.getCurrentBid()) {
+            throw new NotEnoughCreditException();
+        }
+
+        auction.closeAuction();
+        final Bid bid = createOrUpdateBid(bidder, auction, auction.getCurrentBid());
+        return BidResponseDto.from(bid);
     }
 }

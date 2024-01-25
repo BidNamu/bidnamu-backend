@@ -3,6 +3,7 @@ package com.bidnamu.bidnamubackend.auction.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -167,5 +168,36 @@ class BidServiceTest {
 
         // Then
         assertThrows(NotEnoughCreditException.class, () -> auctionService.processBidding(dto));
+    }
+
+    @Test
+    @DisplayName("즉결 경매에 입찰을 진행할 경우 경매가 종료되어야 한다")
+    void givenBidOnBuyItNowAuction_whenBidIsPlaced_thenAuctionShouldBeClosed() {
+        // Given
+        final User bidder = mock();
+        final int bidAmount = 10000;
+        final Bid bid = mock();
+
+        auction = Auction.builder()
+            .startingBid(bidAmount)
+            .closingTime(LocalDateTime.now().plusDays(1L))
+            .fixedPrice(true)
+            .build();
+
+        // When
+        when(userService.findByEmail(any())).thenReturn(bidder);
+        when(bidRepository.save(any())).thenReturn(bid);
+        when(auctionRepository.findById(any())).thenReturn(Optional.ofNullable(auction));
+
+        when(bid.getId()).thenReturn(1L);
+        when(bid.getOfferAmount()).thenReturn(bidAmount);
+        when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+
+        when(bidder.getCredit()).thenReturn(bidAmount);
+
+        auctionService.processBidding(new ProcessBiddingDto("username", 1L, bidAmount));
+
+        // Then
+        assertTrue(auction.isAuctioned());
     }
 }
