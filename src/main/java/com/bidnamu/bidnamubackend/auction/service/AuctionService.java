@@ -87,6 +87,8 @@ public class AuctionService {
         }
 
         auction.updateCurrentBid(bidAmount);
+        auction.reevaluateClosingTime();
+
         if (!bidRepository.existsByBidderAndAuction(bidder, auction)) {
             auction.addBidderCount();
             final Bid bid = bidRepository.save(

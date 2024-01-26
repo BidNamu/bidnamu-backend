@@ -89,6 +89,13 @@ public class Auction extends BaseTimeEntity {
         this.currentBid = currentBid;
     }
 
+    public void reevaluateClosingTime() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        if (closingTime.minusMinutes(5).isBefore(currentTime)) {
+            closingTime = currentTime.plusMinutes(5);
+        }
+    }
+
     public void addBidderCount() {
         bidderCount++;
     }

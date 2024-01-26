@@ -245,4 +245,39 @@ class BidServiceTest {
         assertEquals(oldBidderCredit + oldBidAmount, oldBidder.getCredit());
         assertEquals(newBidderPreviousCredit - bidAmount, newBidder.getCredit());
     }
+
+    @Test
+    @DisplayName("경매 종료 5분 이내에 입찰 진행 시 경매 종료 시간이 연장된다")
+    void givenBidWithinLastFiveMinutes_whenBidIsPlaced_thenAuctionClosingTimeIsExtended() {
+        // Given
+        final User bidder = mock();
+        final int bidAmount = 10000;
+        final Bid bid = mock();
+
+        auction = Auction.builder()
+            .title("Test Auction 1")
+            .description("Test Description 1")
+            .closingTime(LocalDateTime.now().plusMinutes(1L))
+            .fixedPrice(false)
+            .build();
+
+        // When
+        when(userService.findByEmail(any())).thenReturn(bidder);
+        when(bidRepository.existsByBidderAndAuction(any(), any())).thenReturn(false);
+        when(auctionRepository.findById(any())).thenReturn(Optional.ofNullable(auction));
+        when(bidRepository.save(any())).thenReturn(bid);
+
+        when(bid.getId()).thenReturn(1L);
+        when(bid.getOfferAmount()).thenReturn(bidAmount);
+        when(bid.getUpdatedAt()).thenReturn(LocalDateTime.now());
+        when(bid.getBidder()).thenReturn(bidder);
+
+        when(bidder.getCredit()).thenReturn(bidAmount);
+
+        auctionService.processBidding(new ProcessBiddingDto("username", 1L, bidAmount));
+
+        // Then
+        assertEquals(auction.getClosingTime().getMinute(),
+            LocalDateTime.now().plusMinutes(5L).getMinute());
+    }
 }
