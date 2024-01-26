@@ -94,7 +94,7 @@ class BidServiceTest {
     }
 
     @Test
-    @DisplayName("이미 입찰에 참여한 경매에 입찰을 추가로 진행하였을 경우 bidderCount가 증가하지 않아햐 한다")
+    @DisplayName("이미 입찰에 참여한 경매에 입찰을 추가로 진행하였을 경우 bidderCount가 증가하지 않아야 한다")
     void givenExistingBidInAuction_whenAdditionalBidIsMade_thenBidderCountShouldNotIncrease() {
         // Given
         final User bidder = mock();
@@ -247,7 +247,7 @@ class BidServiceTest {
     }
 
     @Test
-    @DisplayName("경매 종료 5분 이내에 입찰 진행 시 경매 종료 시간이 연장된다")
+    @DisplayName("경매 종료 5분 이내에 입찰 진행 시 경매 종료 시간이 연장되여야 한다")
     void givenBidWithinLastFiveMinutes_whenBidIsPlaced_thenAuctionClosingTimeIsExtended() {
         // Given
         final User bidder = mock();
