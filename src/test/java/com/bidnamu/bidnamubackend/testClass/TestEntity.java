@@ -19,4 +19,7 @@ public class TestEntity {
 
     @Setter
     private String data;
+
+    @Setter
+    private int num = 0;
 }
