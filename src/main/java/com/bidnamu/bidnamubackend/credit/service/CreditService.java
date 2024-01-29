@@ -36,7 +36,7 @@ public class CreditService {
         creditChargeRepository.save(
             CreditCharge.builder().amount(amount).iamportUid(impUid).status(status).user(user)
                 .build());
-        user.addCredit(amount);
+        user.changeCredit(amount);
 
         return response;
     }
