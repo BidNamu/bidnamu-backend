@@ -59,9 +59,8 @@ public class User extends BaseTimeEntity {
         this.authorities.add(authority);
     }
 
-    public int changeCredit(final int credit) {
+    public void changeCredit(final int credit) {
         this.credit += credit;
-        return this.credit;
     }
 
     public void updateStatus(final UserStatusUpdateRequestDto dto) {
