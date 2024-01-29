@@ -1,6 +1,8 @@
 package com.bidnamu.bidnamubackend.global.aop;
 
 import com.bidnamu.bidnamubackend.global.annotation.DistributedLock;
+import com.bidnamu.bidnamubackend.global.util.AopForTransaction;
+import com.bidnamu.bidnamubackend.global.util.CustomSpringELParser;
 import java.lang.reflect.Method;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

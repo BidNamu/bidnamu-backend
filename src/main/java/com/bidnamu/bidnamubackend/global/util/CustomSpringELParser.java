@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.aop;
+package com.bidnamu.bidnamubackend.global.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

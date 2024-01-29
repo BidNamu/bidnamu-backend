@@ -1,4 +1,4 @@
-package com.bidnamu.bidnamubackend.global.aop;
+package com.bidnamu.bidnamubackend.global.util;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.stereotype.Component;
