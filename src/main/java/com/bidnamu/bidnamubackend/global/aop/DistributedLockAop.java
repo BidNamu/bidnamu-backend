@@ -23,16 +23,16 @@ public class DistributedLockAop {
 
     @Around("@annotation(com.bidnamu.bidnamubackend.global.annotation.DistributedLock)")
     public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        DistributedLock distributedLock = method.getAnnotation(DistributedLock.class);
+        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        final Method method = signature.getMethod();
+        final DistributedLock distributedLock = method.getAnnotation(DistributedLock.class);
 
-        String key = REDISSON_LOCK_PREFIX + CustomSpringELParser.getDynamicValue(
+        final String key = REDISSON_LOCK_PREFIX + CustomSpringELParser.getDynamicValue(
             signature.getParameterNames(), joinPoint.getArgs(), distributedLock.key());
-        RLock rLock = redissonClient.getLock(key);
+        final RLock rLock = redissonClient.getLock(key);
 
         try {
-            boolean available = rLock.tryLock(distributedLock.waitTime(),
+            final boolean available = rLock.tryLock(distributedLock.waitTime(),
                 distributedLock.leaseTime(), distributedLock.timeUnit());
             if (!available) {
                 return false;

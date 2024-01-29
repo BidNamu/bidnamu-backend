@@ -33,9 +33,9 @@ class DistributedLockTest {
     @Test
     @Transactional
     void testDistributedLock() throws InterruptedException {
-        int numberOfThreads = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+        final int numberOfThreads = 100;
+        final ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+        final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
         for (int i = 0; i < numberOfThreads; i++) {
             executorService.submit(() -> {

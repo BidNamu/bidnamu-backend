@@ -22,7 +22,7 @@ public class BidAmountValidator {
         }
     }
 
-    private static int calculateBidIncrement(int currentBid) {
+    private static int calculateBidIncrement(final int currentBid) {
         if (currentBid < 10000) {
             return ZERO_TO_TEN_K;
         } else if (currentBid < 50000) {
