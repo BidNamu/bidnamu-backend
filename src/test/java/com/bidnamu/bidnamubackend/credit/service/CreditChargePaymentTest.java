@@ -58,7 +58,7 @@ class CreditChargePaymentTest {
     @Test
     void createPayment_Success() throws IamportResponseException, IOException {
         // Given
-        String username = "test@example.com";
+        final String username = "test@example.com";
         final User mockUser = new User(username, username, username);
         when(userService.findByEmail(username)).thenReturn(mockUser);
 
