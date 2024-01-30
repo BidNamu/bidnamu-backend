@@ -47,7 +47,7 @@ public class CreditService {
 
     @Transactional
     public CreditChangeHistory changeCredit(final CreditChangeDto dto) {
-        dto.validate();
+        dto.validateAndApply();
         return creditChangeHistoryRepository.save(dto.toEntity());
     }
 

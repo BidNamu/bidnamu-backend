@@ -24,7 +24,7 @@ public record CreditChangeDto(
             .build();
     }
 
-    public void validate() {
+    public void validateAndApply() {
         if (amount == 0) {
             throw new IllegalArgumentException("크레딧 변경 금액은 0일 수 없습니다.");
         }
@@ -37,10 +37,11 @@ public record CreditChangeDto(
             throw new IllegalArgumentException(
                 "잔여 크레딧이 충분하지 않습니다. 현재 크레딧: " + user.getCredit() + ", 요청 금액: " + amount);
         }
+        user.changeCredit(amount);
     }
 
     private boolean isAmountAndReasonInconsistent() {
-        return (amount >= 0 || !reason.isIncrement()) && (amount <= 0 || reason.isIncrement());
+        return (amount > 0 && !reason.isIncrement()) || (amount < 0 && reason.isIncrement());
     }
 
     private int anticipateBalance() {
