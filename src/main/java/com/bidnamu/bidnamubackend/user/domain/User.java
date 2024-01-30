@@ -34,7 +34,7 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean expired = false;
-  
+
     @Column(nullable = false)
     private int credit = 0;
 
@@ -59,7 +59,7 @@ public class User extends BaseTimeEntity {
         this.authorities.add(authority);
     }
 
-    public void addCredit(final int credit) {
+    public void changeCredit(final int credit) {
         this.credit += credit;
     }
 

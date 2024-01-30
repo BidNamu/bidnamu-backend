@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.bidnamu.bidnamubackend.credit.domain.CreditCharge;
+import com.bidnamu.bidnamubackend.credit.repository.CreditChangeHistoryRepository;
 import com.bidnamu.bidnamubackend.credit.repository.CreditChargeRepository;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
@@ -21,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 
 @ExtendWith(MockitoExtension.class)
-class CreditServiceTest {
+class CreditChargePaymentTest {
 
     @Mock
     private IamportClient iamportClient;
@@ -30,12 +31,14 @@ class CreditServiceTest {
     private CreditChargeRepository creditChargeRepository;
 
     @Mock
+    private CreditChangeHistoryRepository creditChangeHistoryRepository;
+
+    @Mock
     private UserService userService;
 
     @InjectMocks
     private CreditService creditService;
 
-    private final String username = "test@example.com";
     private final String impUid = "imp_123456789";
 
     @BeforeEach
@@ -55,6 +58,7 @@ class CreditServiceTest {
     @Test
     void createPayment_Success() throws IamportResponseException, IOException {
         // Given
+        final String username = "test@example.com";
         final User mockUser = new User(username, username, username);
         when(userService.findByEmail(username)).thenReturn(mockUser);
 

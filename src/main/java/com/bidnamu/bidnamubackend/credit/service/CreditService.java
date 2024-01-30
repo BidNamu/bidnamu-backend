@@ -1,7 +1,10 @@
 package com.bidnamu.bidnamubackend.credit.service;
 
+import com.bidnamu.bidnamubackend.credit.domain.CreditChangeReason;
 import com.bidnamu.bidnamubackend.credit.domain.CreditCharge;
 import com.bidnamu.bidnamubackend.credit.domain.PaymentStatus;
+import com.bidnamu.bidnamubackend.credit.dto.CreditChangeDto;
+import com.bidnamu.bidnamubackend.credit.repository.CreditChangeHistoryRepository;
 import com.bidnamu.bidnamubackend.credit.repository.CreditChargeRepository;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
@@ -20,6 +23,7 @@ public class CreditService {
 
     private final IamportClient iamportClient;
     private final CreditChargeRepository creditChargeRepository;
+    private final CreditChangeHistoryRepository creditChangeHistoryRepository;
     private final UserService userService;
 
     @Transactional
@@ -36,9 +40,18 @@ public class CreditService {
         creditChargeRepository.save(
             CreditCharge.builder().amount(amount).iamportUid(impUid).status(status).user(user)
                 .build());
-        user.addCredit(amount);
-
+        applyCreditChangeAndRecordHistory(
+            new CreditChangeDto(user, amount, CreditChangeReason.CHARGE));
         return response;
     }
 
+    @Transactional
+    public void changeCredit(final CreditChangeDto dto) {
+        applyCreditChangeAndRecordHistory(dto);
+    }
+
+    private void applyCreditChangeAndRecordHistory(final CreditChangeDto dto) {
+        dto.validateAndApply();
+        creditChangeHistoryRepository.save(dto.toEntity());
+    }
 }
