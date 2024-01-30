@@ -97,7 +97,7 @@ public class AuctionService {
             return bid;
         }
 
-        Bid existingBid = bidRepository.findByBidderAndAuction(bidder, auction);
+        final Bid existingBid = bidRepository.findByBidderAndAuction(bidder, auction);
         existingBid.updateOfferAmount(bidAmount);
         updateCurrentBidder(auction, existingBid);
         return existingBid;
