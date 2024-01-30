@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.bidnamu.bidnamubackend.credit.domain.CreditCharge;
+import com.bidnamu.bidnamubackend.credit.repository.CreditChangeHistoryRepository;
 import com.bidnamu.bidnamubackend.credit.repository.CreditChargeRepository;
 import com.bidnamu.bidnamubackend.user.domain.User;
 import com.bidnamu.bidnamubackend.user.service.UserService;
@@ -28,6 +29,9 @@ class CreditChargePaymentTest {
 
     @Mock
     private CreditChargeRepository creditChargeRepository;
+
+    @Mock
+    private CreditChangeHistoryRepository creditChangeHistoryRepository;
 
     @Mock
     private UserService userService;
