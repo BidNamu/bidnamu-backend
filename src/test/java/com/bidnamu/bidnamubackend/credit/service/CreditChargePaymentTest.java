@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 
 @ExtendWith(MockitoExtension.class)
-class CreditServiceTest {
+class CreditChargePaymentTest {
 
     @Mock
     private IamportClient iamportClient;
@@ -35,7 +35,6 @@ class CreditServiceTest {
     @InjectMocks
     private CreditService creditService;
 
-    private final String username = "test@example.com";
     private final String impUid = "imp_123456789";
 
     @BeforeEach
@@ -55,6 +54,7 @@ class CreditServiceTest {
     @Test
     void createPayment_Success() throws IamportResponseException, IOException {
         // Given
+        String username = "test@example.com";
         final User mockUser = new User(username, username, username);
         when(userService.findByEmail(username)).thenReturn(mockUser);
 
