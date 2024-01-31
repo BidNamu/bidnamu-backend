@@ -65,6 +65,10 @@ public class Auction extends BaseTimeEntity {
     @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<AuctionImage> auctionImages = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "auction", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<Bid> bidders = new ArrayList<>();
+
     @Column(nullable = false)
     private boolean fixedPrice = false;
 
@@ -104,11 +108,19 @@ public class Auction extends BaseTimeEntity {
         this.auctionImages.add(auctionImage);
     }
 
+    public void addBidder(final Bid bidder) {
+        this.bidders.add(bidder);
+    }
+
     public String getCategoryName() {
         return category.getName();
     }
 
     public List<String> getImageOriginalFileNames() {
         return auctionImages.stream().map(AuctionImage::getOriginalFileName).toList();
+    }
+
+    public String getSellerEmail() {
+        return seller.getEmail();
     }
 }
