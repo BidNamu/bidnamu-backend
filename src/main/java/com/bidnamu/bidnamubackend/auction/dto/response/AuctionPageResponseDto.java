@@ -6,7 +6,9 @@ public record AuctionPageResponseDto(
     List<SearchAuctionResponseDto> auctions,
     PageResponseDto page
 ) {
-    public static AuctionPageResponseDto from( List<SearchAuctionResponseDto> auctions,  PageResponseDto page){
+
+    public static AuctionPageResponseDto from(final List<SearchAuctionResponseDto> auctions,
+        final PageResponseDto page) {
         return new AuctionPageResponseDto(
             auctions,
             page
