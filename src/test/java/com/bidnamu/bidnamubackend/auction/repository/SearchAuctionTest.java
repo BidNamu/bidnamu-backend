@@ -191,7 +191,7 @@ class SearchAuctionTest {
         final SearchAuctionRequestDto requestDto = new SearchAuctionRequestDto("", "",
             0, 0, null, CLOSING_TIME_DESC, null,
             null, 0);
-        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 10);
+        final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 5);
 
         //when
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto, pageable);

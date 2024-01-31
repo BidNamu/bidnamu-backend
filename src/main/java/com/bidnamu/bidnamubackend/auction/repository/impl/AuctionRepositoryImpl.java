@@ -1,6 +1,5 @@
 package com.bidnamu.bidnamubackend.auction.repository.impl;
 
-import static com.bidnamu.bidnamubackend.auction.domain.AuctionSortMethod.eqSortMethod;
 import static com.bidnamu.bidnamubackend.auction.domain.QAuction.auction;
 
 import com.bidnamu.bidnamubackend.auction.domain.Auction;
@@ -35,7 +34,7 @@ public class AuctionRepositoryImpl implements AuctionRepositoryCustom {
                 eqRangeTime(requestDto.startTime(), requestDto.closeTime()));
 
         if (requestDto.sortMethod() != null) {
-            eqSortMethod(query, requestDto.sortMethod().name());
+            requestDto.sortMethod().sort(query);
         }
 
         final List<Auction> content = query.offset(pageable.getOffset())
