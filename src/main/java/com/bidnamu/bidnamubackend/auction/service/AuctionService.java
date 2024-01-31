@@ -45,7 +45,7 @@ public class AuctionService {
         return AuctionDetailResponseDto.from(auction);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public AuctionPageResponseDto searchAuction(final SearchAuctionRequestDto requestDto) {
         final Pageable pageable = PageRequest.of(requestDto.pageNumber(), 5);
         final Page<Auction> result = auctionRepository.findBySearchAuction(requestDto, pageable);
