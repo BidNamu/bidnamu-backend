@@ -2,8 +2,10 @@ package com.bidnamu.bidnamubackend.global.exception.handler;
 
 import com.bidnamu.bidnamubackend.auth.exception.UnknownTokenException;
 import com.bidnamu.bidnamubackend.bid.exception.BidException;
+import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.file.exception.FileUploadException;
 import com.bidnamu.bidnamubackend.global.exception.error_code.CommonErrorCode;
+import com.bidnamu.bidnamubackend.global.exception.response.ErrorBodyResponse;
 import com.bidnamu.bidnamubackend.global.exception.response.ErrorResponse;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedEmailException;
 import com.bidnamu.bidnamubackend.user.exception.DuplicatedNicknameException;
@@ -121,6 +123,15 @@ public class GlobalExceptionHandler {
                 createErrorResponse(RESOURCE_NOT_FOUND, "해당하는 거래내역을 찾을 수 없습니다.").toResponseEntity();
             default -> createErrorResponse(INTERNAL_SERVER_ERROR, "서버 응답 오류").toResponseEntity();
         };
+    }
+
+    @ExceptionHandler(NotEnoughCreditException.class)
+    public ResponseEntity<ErrorBodyResponse> handleNotEnoughCreditException(
+        final NotEnoughCreditException e
+    ) {
+        final var errorResponse = createErrorResponse(INVALID_PARAMETER, e.getMessage());
+        final var errorBodyResponse = new ErrorBodyResponse(errorResponse, e.getResponseDto());
+        return ResponseEntity.status(errorResponse.code().getHttpStatus()).body(errorBodyResponse);
     }
 
     @ExceptionHandler(BidException.class)
