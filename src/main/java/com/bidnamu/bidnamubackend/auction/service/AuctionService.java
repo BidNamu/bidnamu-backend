@@ -9,6 +9,7 @@ import com.bidnamu.bidnamubackend.auction.dto.response.AuctionDetailResponseDto;
 import com.bidnamu.bidnamubackend.auction.dto.response.BidResponseDto;
 import com.bidnamu.bidnamubackend.auction.repository.AuctionRepository;
 import com.bidnamu.bidnamubackend.bid.domain.Bid;
+import com.bidnamu.bidnamubackend.bid.dto.response.NotEnoughCreditResponseDto;
 import com.bidnamu.bidnamubackend.bid.exception.AuctionClosedException;
 import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.bid.repository.BidRepository;
@@ -81,7 +82,8 @@ public class AuctionService {
         final int bidAmount
     ) {
         if (bidder.getCredit() < bidAmount) {
-            throw new NotEnoughCreditException();
+            throw new NotEnoughCreditException(
+                new NotEnoughCreditResponseDto(bidder.getCredit(), bidAmount));
         }
 
         auction.updateCurrentBid(bidAmount);
@@ -106,7 +108,8 @@ public class AuctionService {
         final Auction auction
     ) {
         if (bidder.getCredit() < auction.getCurrentBid()) {
-            throw new NotEnoughCreditException();
+            throw new NotEnoughCreditException(
+                new NotEnoughCreditResponseDto(bidder.getCredit(), auction.getCurrentBid()));
         }
 
         auction.closeAuction();

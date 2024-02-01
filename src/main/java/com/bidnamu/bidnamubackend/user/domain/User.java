@@ -2,6 +2,7 @@ package com.bidnamu.bidnamubackend.user.domain;
 
 import com.bidnamu.bidnamubackend.auth.domain.Authority;
 import com.bidnamu.bidnamubackend.auth.domain.Role;
+import com.bidnamu.bidnamubackend.bid.dto.response.NotEnoughCreditResponseDto;
 import com.bidnamu.bidnamubackend.bid.exception.NotEnoughCreditException;
 import com.bidnamu.bidnamubackend.global.domain.BaseTimeEntity;
 import com.bidnamu.bidnamubackend.user.dto.request.UserStatusUpdateRequestDto;
@@ -73,7 +74,7 @@ public class User extends BaseTimeEntity {
 
     public void deductCredit(final int amount) {
         if (this.credit < amount) {
-            throw new NotEnoughCreditException();
+            throw new NotEnoughCreditException(new NotEnoughCreditResponseDto(this.credit, amount));
         }
 
         this.credit -= amount;
