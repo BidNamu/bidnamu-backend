@@ -6,8 +6,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
@@ -54,10 +52,6 @@ public class Auction extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime closingTime;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AuctionStatus status = AuctionStatus.UNBIDDEN;
-
     @Column(nullable = false)
     private int bidderCount = 0;
 
@@ -67,6 +61,9 @@ public class Auction extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean fixedPrice = false;
+
+    @Column(nullable = false)
+    private boolean auctioned = false;
 
     @Builder
     public Auction(
@@ -92,12 +89,15 @@ public class Auction extends BaseTimeEntity {
         this.currentBid = currentBid;
     }
 
-    public void addBidderCount() {
-        bidderCount++;
+    public void reevaluateClosingTime() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        if (closingTime.minusMinutes(5).isBefore(currentTime)) {
+            closingTime = currentTime.plusMinutes(5);
+        }
     }
 
-    public void updateStatus(final AuctionStatus status) {
-        this.status = status;
+    public void addBidderCount() {
+        bidderCount++;
     }
 
     public void addAuctionImage(final AuctionImage auctionImage) {
@@ -110,5 +110,13 @@ public class Auction extends BaseTimeEntity {
 
     public List<String> getImageOriginalFileNames() {
         return auctionImages.stream().map(AuctionImage::getOriginalFileName).toList();
+    }
+
+    public boolean isOnGoing() {
+        return LocalDateTime.now().isBefore(closingTime) && (!auctioned);
+    }
+
+    public void closeAuction() {
+        this.auctioned = true;
     }
 }
